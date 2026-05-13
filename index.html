@@ -125,7 +125,47 @@ function finish(){markDirty();orders.forEach(o=>{if(!o.enabled)return;if(o.start
 function cards(){let o=active(),w=$("mobileCards");if(!w||!o.enabled)return;w.innerHTML=o.steps.map((s,i)=>{let c=o.table.rows[i+1].cells[o.currentCycle+2],time=c?.textContent||"";return`<div class="card" style="${i===o.currentStep&&(o.startTime!==null||o.paused)?"border-color:var(--b2)":""}"><div class="cardTop"><div><div class="cardTitle">${i+1}. ${esc(s.name)}</div><div class="cardMeta">${orderLabel(o)} · ${T("cycle")} ${o.currentCycle+1}</div><select class="stepType mobileType" data-order="${o.key}" data-step="${i}"><option ${s.type==="VA"?"selected":""}>VA</option><option ${s.type==="NNVA"?"selected":""}>NNVA</option><option ${s.type==="NVA"?"selected":""}>NVA</option></select></div><div class="mobileTime"><div class="cardTime">${time||"00:00:00"}</div><button class="invalidateIcon" data-row="${i}">🗑</button></div></div></div>`}).join("");cycleData();history()}
 function cycleData(){let o=active(),d=$("mobileCycleData");if(!d||!o.enabled)return;let rows=o.steps.map((s,i)=>`<tr><td>${i+1}. ${esc(s.name)}</td><td>${o.table.rows[i+1].cells[o.currentCycle+2]?.textContent||"-"}</td></tr>`).join("");let total=o.table.rows[o.steps.length+1]?.cells[o.currentCycle+2]?.textContent||"-";d.innerHTML=`<div class="box"><div class="boxTitle">${T("cycleData")} · ${orderLabel(o)} · ${T("cycle")} ${o.currentCycle+1}</div><table class="cycleTable"><tbody>${rows}<tr><th>${T("totalCycleTime")}</th><th>${total}</th></tr></tbody></table></div>`}
 function history(){let o=active(),h=$("mobileHistory");if(!h||!o.enabled)return;let chips=[];for(let c=0;c<countCycles(o);c++){let total=o.table.rows[o.steps.length+1]?.cells[c+2]?.textContent||"";if(total)chips.push(`<span class="chip">${T("cycle")} ${c+1}: ${total}</span>`)}h.innerHTML=chips.length?`<div class="box"><div class="boxTitle">${T("history")}</div><div class="chips">${chips.join("")}</div></div>`:""}
-function exportCsv(){orders.forEach(o=>{if(o.enabled)totals(o)});let sep=";",out=[];out.push(["Process",pName,"Date",pDate].map(csv).join(sep));orders.forEach(o=>{if(!o.enabled)return;out.push([orderLabel(o)].map(csv).join(sep));let head=["#",T("processStep"),T("type")];for(let c=1;c<=countCycles(o);c++)head.push(`${T("cycle")} ${c}`);head.push(T("average"));out.push(head.map(csv).join(sep));o.steps.forEach((s,i)=>{let row=[i+1,s.name,s.type];for(let c=0;c<countCycles(o);c++){let cell=o.table.rows[i+1].cells[c+2];row.push(cell.classList.contains("invalid")?"":(cell.textContent||""))}row.push(o.table.rows[i+1].lastChild.textContent||"");out.push(row.map(csv).join(sep))});let total=["",T("totalCycleTime"),""];for(let c=0;c<countCycles(o);c++)total.push(o.table.rows[o.steps.length+1].cells[c+2].textContent||"");total.push("");out.push(total.map(csv).join(sep));out.push("")});let w=waste(allData());out.push(["VA %",w.VA,"NNVA %",w.NNVA,"NVA %",w.NVA].map(csv).join(sep));let blob=new Blob(["\uFEFF"+out.join("\r\n")],{type:"text/csv;charset=utf-8"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="step_timer_analysis.csv";a.click();URL.revokeObjectURL(a.href);dirty=false}
+function exportCsv(){
+ orders.forEach(o=>{if(o.enabled)totals(o)});
+ const wb=XLSX.utils.book_new();
+ const aoa=[];
+ aoa.push(["Process",pName,"Date",pDate]);
+ aoa.push([]);
+ orders.forEach(o=>{
+  if(!o.enabled)return;
+  aoa.push([orderLabel(o)]);
+  let head=["#",T("processStep"),T("type")];
+  for(let c=1;c<=countCycles(o);c++)head.push(`${T("cycle")} ${c}`);
+  head.push(T("average"));
+  aoa.push(head);
+  o.steps.forEach((s,i)=>{
+   let row=[String(i+1),s.name,s.type];
+   for(let c=0;c<countCycles(o);c++){
+    let cell=o.table.rows[i+1].cells[c+2];
+    row.push(cell.classList.contains("invalid")?"":String(cell.textContent||""));
+   }
+   row.push(String(o.table.rows[i+1].lastChild.textContent||""));
+   aoa.push(row);
+  });
+  let total=["",T("totalCycleTime"),""];
+  for(let c=0;c<countCycles(o);c++)total.push(String(o.table.rows[o.steps.length+1].cells[c+2].textContent||""));
+  total.push("");
+  aoa.push(total);
+  aoa.push([]);
+ });
+ let w=waste(allData());
+ aoa.push(["VA %",String(w.VA)+"%","NNVA %",String(w.NNVA)+"%","NVA %",String(w.NVA)+"%"]);
+ const ws=XLSX.utils.aoa_to_sheet(aoa);
+ Object.keys(ws).forEach(addr=>{
+  if(addr[0]==="!")return;
+  ws[addr].t="s";
+  ws[addr].z="@";
+ });
+ ws["!cols"]=[{wch:8},{wch:52},{wch:12},{wch:14},{wch:14},{wch:14},{wch:14},{wch:14},{wch:14},{wch:14}];
+ XLSX.utils.book_append_sheet(wb,ws,"Step Timer");
+ XLSX.writeFile(wb,"step_timer_analysis.xlsx");
+ dirty=false;
+}
 async function loadStepFileList(){let selects=[$("savedStepsFileA"),$("savedStepsFileB")];selects.forEach(s=>s.innerHTML=`<option value="">Loading...</option>`);try{let res=await fetch("stepfiles.json",{cache:"no-store"});if(!res.ok)throw new Error("stepfiles.json not found");let files=await res.json();if(!Array.isArray(files)||!files.length)throw new Error("No files in stepfiles.json");let valid=files.filter(x=>String(x).toLowerCase().endsWith(".xlsx"));if(!valid.length)throw new Error("No .xlsx files listed");selects.forEach(sel=>{sel.innerHTML="";valid.forEach(file=>{let opt=document.createElement("option");opt.value=file;opt.textContent=String(file).replace(/\.xlsx$/i,"");sel.appendChild(opt)})})}catch(e){selects.forEach(sel=>sel.innerHTML=`<option value="LH_enkel_op2.xlsx">LH_enkel_op2</option>`);alert(`${T("loadError")}: ${e.message}. Using fallback file.`)}}
 async function loadSavedSteps(target){let file=$(target==="A"?"savedStepsFileA":"savedStepsFileB").value,box=target==="A"?"stepsTableA":"stepsTableB";if(!file)return alert(T("fileNotFound"));try{let res=await fetch(file,{cache:"no-store"});if(!res.ok)throw new Error(T("fileNotFound"));let buf=await res.arrayBuffer();let wb=XLSX.read(buf,{type:"array"});let ws=wb.Sheets[wb.SheetNames[0]];let rows=XLSX.utils.sheet_to_json(ws,{header:1});let list=rows.slice(1).map(r=>String(r[0]||"").trim()).filter(Boolean);if(!list.length)return alert(T("noStepsFound"));$(box).innerHTML="";list.forEach(x=>addStep(box,x,"VA",false));dirty=false}catch(e){alert(`${T("loadError")}: ${e.message}`)}}
 function saveSteps(){let list=active().enabled?active().steps:readSteps("stepsTableA");if(!list.length)return alert(T("pleaseAdd"));let ws=XLSX.utils.aoa_to_sheet([["Arbetssteg"],...list.map(x=>[x.name])]);let wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"Sheet1");XLSX.writeFile(wb,(pName||"saved_steps")+".xlsx")}
