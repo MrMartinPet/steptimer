@@ -114,16 +114,71 @@ function moveToNewColumnTop(o){
  addCycle(o,o.currentCycle+1);
 }
 function switchOrder(){
- let from=active(),other=activeIndex===0?1:0,to=orders[other];
- if(!to.enabled)return alert(T("pleaseAddSecond"));
- finalizeActiveCell(from);
- moveToNewColumnTop(to);
- activeIndex=other;
- updateActiveView();
- cards();
- $("pauseBtn").textContent=T("pause");
- $("mobileStartBtn").textContent=T("start");
- status(`${orderLabel(to)} · ${T("cycle")} ${to.currentCycle+1} · ${T("step")} 1`);
+    let current=active();
+    let other=activeIndex===0?1:0;
+
+    if(!orders[other].enabled){
+        return alert(T("pleaseAddSecond"));
+    }
+
+    pauseOrder(current);
+    endStep(current);
+
+    let currentCell=current.table
+        ?.rows[current.currentStep+1]
+        ?.cells[current.currentCycle+2];
+
+    let hasData=currentCell && currentCell.textContent.trim()!=="";
+
+    if(hasData){
+        let cycles=countCycles(current);
+
+        if(current.currentCycle>=cycles-1){
+            addCycle(current,cycles+1);
+        }
+
+        current.currentCycle++;
+    }
+
+    current.currentStep=0;
+    current.startTime=null;
+    current.paused=false;
+    current.elapsedBeforePause=0;
+
+    activeIndex=other;
+
+    let target=active();
+
+    let targetCycles=countCycles(target);
+
+    if(targetCycles===0){
+        build(target,1);
+    }
+
+    let targetCell=target.table
+        ?.rows[target.currentStep+1]
+        ?.cells[target.currentCycle+2];
+
+    let targetHasData=targetCell &&
+        targetCell.textContent.trim()!=="";
+
+    if(targetHasData){
+
+        if(target.currentCycle>=targetCycles-1){
+            addCycle(target,targetCycles+1);
+        }
+
+        target.currentCycle++;
+    }
+
+    target.currentStep=0;
+
+    updateActiveView();
+    cards();
+
+    status(
+        `${orderLabel(target)} · ${T("cycle")} ${target.currentCycle+1}`
+    );
 }
 function updateActiveView(){let o=active();if($("trackerTableA")){$("trackerTableA").classList.toggle("hidden",activeIndex!==0);$("trackerTableB").classList.toggle("hidden",activeIndex!==1);$("activeOrderView").textContent=orderLabel(o);$("pauseBtn").textContent=o.paused?T("resume"):T("pause");$("mobileStartBtn").textContent=o.startTime===null&&!o.paused?T("start"):T("next")}}
 function allData(){let arr=[];orders.forEach(o=>{if(!o.enabled)return;arr.push(...o.steps.map((s,i)=>{let cells=[...o.table.rows[i+1].cells].slice(2,-1),vals=cells.filter(c=>c.textContent&&!c.classList.contains("invalid")).map(c=>parse(c.textContent));return{order:orderLabel(o),name:s.name,type:s.type,ms:vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:0}}))});return arr}
