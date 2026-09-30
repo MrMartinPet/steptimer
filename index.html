@@ -1,291 +1,650 @@
 <!doctype html>
-<html lang="en">
+<html lang="sv" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1020">
 <title>Step Timer</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <style>
-:root{--p:#fff;--l:#e2e8f0;--t:#111827;--m:#667085;--b:#156082;--b2:#1f7a9f;--d:#e5484d;--sh:0 18px 50px rgba(15,23,42,.12);--r:20px}
-*{box-sizing:border-box}html,body{max-width:100%;overflow-x:hidden}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:radial-gradient(circle at 12% 0%,rgba(21,96,130,.13),transparent 34%),linear-gradient(180deg,#fbfcfd,#eef2f6);color:var(--t)}
-.app{width:min(1280px,100%);margin:auto;padding:18px}.topbar,.brand,.topActions,.langSwitch,.cardTop,.mobileTime{display:flex;align-items:center}.topbar{justify-content:space-between;gap:16px;padding:14px 0 22px}.brand{gap:14px}.logo{height:34px;max-width:220px;object-fit:contain;filter:invert(1)}.kicker{color:var(--m);font-size:.78rem;letter-spacing:.16em;text-transform:uppercase}h1{margin:3px 0 0;font-size:clamp(1.55rem,3.4vw,2.55rem);line-height:1;text-transform:uppercase}.topActions{gap:10px}.langSwitch{gap:6px;background:#fff;border:1px solid var(--l);border-radius:999px;padding:5px}.langBtn{min-height:34px;padding:7px 10px;border-radius:999px;background:transparent;color:var(--m);border:0;cursor:pointer;font-weight:700}.langBtn.active{background:var(--b);color:#fff}.statusPill{border:1px solid var(--l);background:#fff;border-radius:999px;padding:9px 12px;color:var(--m);font-size:.9rem}.screen{background:rgba(255,255,255,.94);border:1px solid #fff;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}.screenHeader{display:flex;justify-content:space-between;gap:16px;padding:18px;border-bottom:1px solid var(--l);background:linear-gradient(90deg,#fff,#f7fafc)}.screenHeader h2{margin:0;font-size:1.05rem;text-transform:uppercase;letter-spacing:.06em}.hint,.introText{color:var(--m);line-height:1.45}.hint{margin:6px 0 0;font-size:.95rem;max-width:850px}.hidden{display:none!important}.introCard{margin:16px 16px 0;padding:16px;border:1px solid var(--l);border-radius:18px;background:linear-gradient(135deg,#fff,#f1f7fa);display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center}.introText{margin:6px 0 0}.introBadge{width:76px;height:76px;border-radius:22px;background:var(--b);color:#fff;display:grid;place-items:center;font-size:1.8rem;font-weight:900}.checklist{margin:12px 16px 0;display:grid;gap:8px}.checkItem{display:grid;grid-template-columns:26px 1fr;gap:10px;background:#fff;border:1px solid var(--l);border-radius:14px;padding:10px}.checkItem input{width:19px;height:19px}.checkItem strong{display:block;margin-bottom:3px}.checkItem span{color:var(--m);font-size:.9rem;line-height:1.35}.metaGrid{margin:10px 16px 0;display:grid;grid-template-columns:1fr 220px;gap:10px}.savedGrid{margin:10px 16px 0;display:grid;grid-template-columns:1fr auto 1fr auto auto;gap:10px;align-items:center;background:#f8fafc;border:1px solid var(--l);border-radius:16px;padding:10px}.orderGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 16px}.orderBox{background:#fff;border:1px solid var(--l);border-radius:16px;overflow:hidden}.orderHead{padding:10px 12px;background:#f8fafc;border-bottom:1px solid var(--l);font-weight:900;color:#334155;display:flex;justify-content:space-between;gap:10px}.orderHead span{color:var(--m);font-weight:700;font-size:.82rem}input,select{border:1px solid #d0d7de;background:#fff;color:var(--t);border-radius:12px;padding:12px;font-size:16px;width:100%;outline:none}button{border:0;border-radius:14px;padding:11px 14px;color:#fff;background:#334155;font-size:.95rem;font-weight:700;cursor:pointer;min-height:42px}.primary{background:var(--b)}.secondary{background:#e8eef3;color:#1f2937}.danger{background:var(--d)}.ghost{background:#fff;border:1px solid var(--l);color:var(--t)}.controls{display:flex;flex-wrap:wrap;gap:8px;padding:14px;border-top:1px solid var(--l);background:#fbfcfd}.stepList{padding:12px;display:grid;gap:8px}.stepRow{display:grid;grid-template-columns:40px 1fr 120px 34px;gap:8px;align-items:center;background:#fff;border:1px solid var(--l);border-radius:16px;padding:8px}.stepNo{color:var(--m);font-weight:800;text-align:center}.dragHandle{display:grid;place-items:center;color:var(--m);font-weight:900;cursor:grab;font-size:1.15rem;user-select:none}.stepRow.dragging{opacity:.45;border-color:var(--b2)}.stepType{font-weight:800;background:#fff;color:var(--t);border:2px solid #d0d7de}.typeVA{border-color:#16a34a;background:#fff;color:var(--t)}.typeNNVA{border-color:#eab308;background:#fff;color:var(--t)}.typeNVA{border-color:#dc2626;background:#fff;color:var(--t)}.orderNameInput{margin-top:8px;font-weight:900;font-size:18px;border:1px solid #cbd5e1;background:#fff}.orderTitleWrap{width:100%}.activeOrder{font-weight:900;color:var(--b);font-size:1.05rem}.trackerShell{overflow:auto}table{border-collapse:separate;border-spacing:0;width:100%;min-width:850px}th,td{border-right:1px solid var(--l);border-bottom:1px solid var(--l);padding:10px;text-align:center}th{background:#f8fafc;color:#475467;font-size:.82rem;text-transform:uppercase;position:sticky;top:0}th:nth-child(2),td:nth-child(2){min-width:250px;text-align:left;position:sticky;left:0;background:#fff}td{background:#fff;cursor:pointer}td.running{outline:2px solid var(--b2);outline-offset:-2px;background:rgba(21,96,130,.08)}td.invalid{color:var(--d);text-decoration:line-through;background:rgba(229,72,77,.08)}.average{background:#fff8dc!important;font-weight:800;color:#9a6b00}.totalRow td{background:#eaf6fa;font-weight:800;color:var(--b)}.deleteCol,.invalidateIcon{display:inline-grid;place-items:center;border-radius:999px;padding:0;color:var(--d);background:#fff;border:1px solid rgba(229,72,77,.25)}.deleteCol{width:28px;height:28px;margin-top:5px}.invalidateIcon{width:25px;height:25px;min-height:25px;font-size:.78rem}.badge{display:inline-flex;margin-left:6px;padding:2px 6px;border-radius:999px;font-size:.68rem;font-weight:900}.badgeVA{background:#d1fae5;color:#065f46}.badgeNNVA{background:#fef3c7;color:#92400e}.badgeNVA{background:#fee2e2;color:#7f1d1d}.analysisNote{padding:10px 14px;color:var(--m);font-size:.88rem}.mobileCards,.mobileHistory,.mobileCycleData{display:none}.mobileCards{padding:8px;gap:6px}.card{border:1px solid var(--l);background:#fff;border-radius:14px;padding:8px}.cardTop{justify-content:space-between;gap:8px;align-items:flex-start}.cardTitle{font-weight:800;font-size:.9rem}.cardMeta{color:var(--m);font-size:.72rem;margin-top:2px}.cardTime{font-size:1rem;font-weight:900;text-align:right}.mobileTime{gap:6px}.fabBar{position:sticky;bottom:0;z-index:5;display:none;gap:6px;padding:7px;background:linear-gradient(180deg,rgba(244,246,248,0),rgba(244,246,248,.96) 28%)}.fabBar button{flex:1}.box{background:#fff;border:1px solid var(--l);border-radius:14px;padding:10px;margin:0 8px 8px}.boxTitle{font-size:.72rem;color:var(--m);font-weight:900;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}.chips{display:flex;flex-wrap:wrap;gap:6px}.chip{font-size:.76rem;padding:4px 7px;border-radius:999px;background:#f1f5f9;color:#334155}.cycleTable{width:100%;border-collapse:collapse;font-size:.78rem}.cycleTable th,.cycleTable td{position:static!important;min-width:0!important;border:1px solid var(--l);padding:5px;text-align:left;background:#fff}.cycleTable td:last-child,.cycleTable th:last-child{text-align:right}.results{padding:16px;display:grid;gap:14px}.summaryGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.metric,.chartBox,.wasteItem{background:#fff;border:1px solid var(--l)}.metric{border-radius:16px;padding:14px}.metricLabel{color:var(--m);font-size:.78rem;text-transform:uppercase;letter-spacing:.08em}.metricValue{font-size:1.35rem;font-weight:900;margin-top:5px}.chartBox{border-radius:16px;padding:14px}.bars{display:grid;gap:8px;margin-top:10px}.barRow{display:grid;grid-template-columns:minmax(120px,240px) 1fr 82px;gap:8px;align-items:center}.barName{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.barTrack{height:16px;background:#edf2f7;border-radius:999px;overflow:hidden}.barFill{height:100%;background:linear-gradient(90deg,var(--b),var(--b2))}.barValue{text-align:right;color:var(--m);font-weight:700}.wasteGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.wasteItem{padding:10px;border-radius:14px}.wasteVA{background:#d1fae5;border-color:#86efac;color:#065f46}.wasteNNVA{background:#fef3c7;border-color:#facc15;color:#92400e}.wasteNVA{background:#fee2e2;border-color:#fca5a5;color:#7f1d1d}.wasteItem strong{display:block;font-size:1.2rem;margin-top:4px}
-@media(max-width:760px){.app{padding:6px}.topbar{padding:6px 0 8px;align-items:flex-start}.logo{height:21px;max-width:145px}.kicker{font-size:.6rem}h1{font-size:1.25rem}.topActions{align-items:flex-end;flex-direction:column}.statusPill{display:none}.screen{border-radius:16px}.screenHeader{display:block;padding:8px 9px}.screenHeader h2{font-size:.82rem}.hint{font-size:.72rem;margin-top:2px}.introCard{grid-template-columns:1fr;margin:7px;padding:9px}.introBadge{display:none}.checklist{margin:7px;gap:5px}.checkItem{padding:7px;border-radius:10px}.checkItem span{font-size:.72rem}.metaGrid,.savedGrid,.orderGrid{grid-template-columns:1fr;margin:7px;gap:5px}.stepList{padding:7px;gap:5px}.stepRow{grid-template-columns:24px 1fr 68px 24px;padding:5px;gap:4px;border-radius:10px}.stepType{padding:7px 3px;font-size:.72rem}.dragHandle{font-size:.9rem}input,select{padding:8px;font-size:14px}.controls{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;padding:6px;order:-1}button{min-height:30px;padding:5px 6px;font-size:.69rem;border-radius:8px}.trackerShell{display:none}.mobileCards{display:grid}.mobileHistory,.mobileCycleData{display:block}.fabBar{display:flex}.analysisNote{padding:5px 8px;font-size:.7rem}.card{padding:5px 6px;border-radius:10px}.cardTitle{font-size:.75rem;line-height:1.1}.cardMeta{font-size:.62rem}.cardTime{font-size:.86rem}.badge{font-size:.55rem;padding:1px 4px;margin-left:2px}.summaryGrid,.wasteGrid{grid-template-columns:1fr}.results{padding:8px}.chartBox,.metric{padding:9px;border-radius:12px}.barRow{display:block}.barName{font-size:.78rem;margin-bottom:3px}.barTrack{height:12px}.barValue{text-align:left;font-size:.76rem;margin-top:2px}.metricValue{font-size:1.1rem}}
+:root{
+  --bg:#f7f7f9;--paper:#ffffff;--paper-2:#f8fafc;--ink:#0f172a;--muted:#64748b;--line:#e2e8f0;
+  --accent:#2563eb;--accent-2:#1d4ed8;--danger:#dc2626;--danger-2:#b91c1c;--success:#16a34a;--warn:#f59e0b;
+  --shadow:0 8px 28px rgba(15,23,42,.07);--radius:12px;--tap:42px;
+}
+html[data-theme="dark"]{
+  --bg:#0b1020;--paper:#111827;--paper-2:#0f172a;--ink:#f8fafc;--muted:#94a3b8;--line:#334155;
+  --accent:#60a5fa;--accent-2:#3b82f6;--shadow:0 12px 34px rgba(0,0,0,.28)
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Inter,Arial,sans-serif}
+button,input,select,textarea{font:inherit}
+button{touch-action:manipulation}
+.app{min-height:100vh;padding:8px}
+.hidden{display:none!important}
+.menubar{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:7px 10px;margin-bottom:8px;position:sticky;top:6px;z-index:30;box-shadow:0 2px 10px rgba(0,0,0,.04)}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}.brand-mark{width:34px;height:34px;border-radius:8px;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:900;font-size:17px}.brand-title{font-weight:850;font-size:16px;line-height:1.1}.brand-sub{font-size:11px;color:var(--muted);margin-top:2px}.menu-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.pad{padding:14px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:var(--tap);padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);font-weight:750;cursor:pointer}.btn:hover{filter:brightness(.98)}.btn:disabled{opacity:.42;cursor:not-allowed}.btn.primary{background:var(--accent);border-color:var(--accent-2);color:#fff}.btn.secondary{background:var(--paper)}.btn.danger{background:var(--danger);border-color:var(--danger-2);color:#fff}.btn.success{background:var(--success);border-color:#15803d;color:#fff}.btn.small{min-height:36px;padding:6px 10px;font-size:12px}.btn.big{min-height:54px;font-size:16px}.icon-btn{width:38px;min-width:38px;padding:0}
+.eyebrow{font-size:11px;font-weight:850;letter-spacing:.09em;color:var(--accent);text-transform:uppercase}.muted{color:var(--muted)}.compact{font-size:12px}
+h1,h2,h3{margin:0;color:var(--ink)}h1{font-size:24px;margin-top:4px}h2{font-size:19px}h3{font-size:15px}
+.setup-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(300px,.75fr);gap:8px}
+.form-grid{display:grid;grid-template-columns:1fr 180px;gap:10px;margin-top:12px}
+.field{display:flex;flex-direction:column;gap:5px;min-width:0}.field>span{font-size:11px;font-weight:800;color:var(--muted);letter-spacing:.04em}
+.field input,.field select{width:100%;min-height:44px;border:1px solid var(--line);border-radius:8px;padding:9px 10px;background:var(--paper);color:var(--ink);outline:none}
+.field input:focus,.field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent)}
+.source-row{display:grid;grid-template-columns:1fr auto;gap:7px;margin-top:10px}.source-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px}
+.help{font-size:12px;line-height:1.45;color:var(--muted);margin-top:10px}
+.checks{display:grid;gap:7px;margin-top:12px}.check{display:grid;grid-template-columns:22px 1fr;gap:9px;align-items:start;padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:var(--paper-2)}.check input{width:18px;height:18px;margin:1px 0 0}.check strong{display:block;font-size:12px}.check span{display:block;font-size:11px;color:var(--muted);line-height:1.35;margin-top:2px}
+.steps-card{margin-top:8px;padding:14px}.card-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.card-head-actions{display:flex;gap:6px;flex-wrap:wrap}
+.step-list{display:grid;gap:7px;margin-top:12px}
+.step-row{display:grid;grid-template-columns:38px minmax(0,1fr) 110px 38px 38px 38px;gap:7px;align-items:center;padding:8px;border:1px solid var(--line);border-radius:10px;background:var(--paper-2)}
+.step-no{width:30px;height:30px;border-radius:8px;background:var(--paper);border:1px solid var(--line);display:grid;place-items:center;font-size:12px;font-weight:850;color:var(--muted)}
+.step-row input,.step-row select{width:100%;min-height:40px;border:1px solid var(--line);border-radius:8px;padding:7px 9px;background:var(--paper);color:var(--ink)}
+.step-row input:focus,.step-row select:focus{border-color:var(--accent);outline:none}
+.type-VA{border-left:4px solid var(--success)}.type-NNVA{border-left:4px solid var(--warn)}.type-NVA{border-left:4px solid var(--danger)}
+.setup-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px}.step-count{font-size:12px;color:var(--muted);font-weight:750}.setup-footer .btn{min-width:210px}
+.live-top{padding:12px;position:sticky;top:62px;z-index:20}.live-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.live-title{min-width:0}.live-title h2{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.live-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.live-kpis{display:grid;grid-template-columns:1.4fr .75fr .75fr .8fr;gap:7px;margin-top:10px}.kpi{border:1px solid var(--line);background:var(--paper-2);border-radius:9px;padding:9px 10px;min-width:0}.kpi span{display:block;font-size:10px;color:var(--muted);font-weight:850;letter-spacing:.05em}.kpi strong{display:block;margin-top:3px;font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.kpi.timer{border-left:4px solid var(--accent)}.timer-value{font-variant-numeric:tabular-nums}
+.live-layout{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:8px;margin-top:8px}.live-main,.live-side{min-width:0}.live-side{display:flex;flex-direction:column;gap:8px}
+.live-step-card{padding:10px}.live-step-list{display:grid;gap:7px}.live-step{display:grid;grid-template-columns:38px 1fr auto;gap:9px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--paper-2)}.live-step.active{outline:2px solid var(--accent);background:color-mix(in srgb,var(--accent) 12%,var(--paper))}.live-step.done{border-left:5px solid var(--success)}.live-step .name{font-size:13px;font-weight:800}.live-step .type{font-size:10px;color:var(--muted);font-weight:750;margin-top:2px}.live-step .time{font-variant-numeric:tabular-nums;font-size:13px;font-weight:850;white-space:nowrap}
+.next-bar{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px}.next-bar .btn{min-height:58px;font-size:17px}
+.side-card{padding:12px}.history-list{display:grid;gap:7px;margin-top:10px}.history-row{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:9px;border:1px solid var(--line);border-radius:9px;background:var(--paper-2)}.history-row.excluded{opacity:.5;text-decoration:line-through}.history-name{font-size:12px;font-weight:800}.history-time{font-size:12px;font-weight:850;font-variant-numeric:tabular-nums}
+.summary-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px}.summary-kpi{padding:11px}.summary-kpi strong{display:block;font-size:21px;margin-top:4px}
+.result-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);gap:8px;margin-top:8px}.chart-card,.class-card{padding:13px}
+.bars{display:grid;gap:9px;margin-top:12px}.bar-row{display:grid;grid-template-columns:minmax(120px,220px) 1fr 82px;gap:8px;align-items:center}.bar-name{font-size:12px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.bar-track{height:10px;border-radius:999px;background:var(--paper-2);border:1px solid var(--line);overflow:hidden}.bar-fill{height:100%;background:var(--accent);border-radius:999px}.bar-value{text-align:right;font-size:12px;font-weight:800;font-variant-numeric:tabular-nums}
+.class-grid{display:grid;gap:8px;margin-top:12px}.class-box{padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--paper-2)}.class-box span{font-size:11px;color:var(--muted);font-weight:800}.class-box strong{display:block;font-size:22px;margin-top:3px}.class-box.va{border-left:5px solid var(--success)}.class-box.nnva{border-left:5px solid var(--warn)}.class-box.nva{border-left:5px solid var(--danger)}
+.result-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}.result-actions .btn{flex:1}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:100;background:#0f172a;color:#fff;border:1px solid #334155;padding:10px 14px;border-radius:9px;box-shadow:0 12px 30px rgba(0,0,0,.32);font-size:13px;font-weight:700;max-width:min(92vw,540px);text-align:center}
+@media(max-width:980px){.setup-grid,.live-layout,.result-grid{grid-template-columns:1fr}.live-side{display:grid;grid-template-columns:1fr 1fr}}
+@media(max-width:760px){
+  .app{padding:6px;padding-bottom:8px}.menubar{top:4px;display:grid;grid-template-columns:minmax(110px,1fr) auto;align-items:start}.brand-sub{display:none}.brand-title{font-size:14px}.brand-mark{width:31px;height:31px}.menu-actions{display:grid;grid-template-columns:repeat(3,minmax(42px,max-content));gap:4px}.menu-actions .btn{min-height:32px;padding:4px 6px;font-size:10px}.setup-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.source-actions{grid-template-columns:1fr}.steps-card{padding:10px}.card-head{align-items:flex-start;flex-direction:column}.card-head-actions{width:100%;display:grid;grid-template-columns:repeat(3,1fr)}.step-row{grid-template-columns:32px 1fr 76px 34px 34px 34px;gap:4px;padding:6px}.step-row input,.step-row select{font-size:13px;padding:6px}.step-no{width:27px;height:27px}.setup-footer{align-items:stretch;flex-direction:column}.setup-footer .btn{width:100%}.live-top{top:54px}.live-head{flex-direction:column}.live-actions{width:100%;display:grid;grid-template-columns:repeat(3,1fr)}.live-kpis{grid-template-columns:1fr 1fr}.live-kpis .timer{grid-column:span 2}.live-side{grid-template-columns:1fr}.next-bar{position:sticky;bottom:6px;z-index:22;padding:6px;background:var(--bg);border-radius:10px}.summary-kpis{grid-template-columns:1fr 1fr}.bar-row{grid-template-columns:1fr 68px}.bar-track{grid-column:1 / -1;grid-row:2}.result-actions{display:grid;grid-template-columns:1fr 1fr}.result-actions .btn:last-child{grid-column:span 2}
+}
+@media(max-width:430px){.menu-actions{grid-template-columns:repeat(3,42px)}.step-row{grid-template-columns:28px 1fr 68px 32px 32px 32px}.step-row .btn{min-height:34px}.live-actions{grid-template-columns:1fr 1fr}.live-actions .btn:last-child{grid-column:span 2}}
 </style>
 </head>
 <body>
 <div class="app">
-<header class="topbar"><div class="brand"><img class="logo" src="./Dometic_hori_office_neg_logga_vit.png" alt="Dometic"><div><div class="kicker" data-i18n="kicker"></div><h1 data-i18n="appTitle"></h1></div></div><div class="topActions"><div class="langSwitch"><button class="langBtn active" id="btnEN">🇬🇧 EN</button><button class="langBtn" id="btnSV">🇸🇪 SV</button></div><div class="statusPill" id="statusPill"></div></div></header>
+  <div class="menubar">
+    <div class="brand"><div class="brand-mark">ST</div><div><div class="brand-title">Step Timer</div><div class="brand-sub">Processobservation · stegtider</div></div></div>
+    <div class="menu-actions">
+      <button id="btnTheme" class="btn small secondary" title="Byt tema">☾</button>
+      <button id="btnExcelTop" class="btn small secondary" disabled>Excel</button>
+      <button id="btnPdfTop" class="btn small secondary" disabled>PDF</button>
+    </div>
+  </div>
 
-<section id="welcomeScreen" class="screen">
-<div class="screenHeader"><div><h2 data-i18n="defineTitle"></h2><p class="hint" data-i18n="defineHint"></p></div></div>
-<div class="introCard"><div><strong data-i18n="introTitle"></strong><p class="introText" data-i18n="introText"></p></div><div class="introBadge">ST</div></div>
-<div class="checklist"><label class="checkItem"><input type="checkbox" id="chkOperator"><div><strong data-i18n="checkOperatorTitle"></strong><span data-i18n="checkOperatorText"></span></div></label><label class="checkItem"><input type="checkbox" id="chkFlow"><div><strong data-i18n="checkFlowTitle"></strong><span data-i18n="checkFlowText"></span></div></label><label class="checkItem"><input type="checkbox" id="chkNormal"><div><strong data-i18n="checkNormalTitle"></strong><span data-i18n="checkNormalText"></span></div></label></div>
-<div class="metaGrid"><input id="processName" data-placeholder="processNamePlaceholder"><input type="date" id="processDate"></div>
-<div class="savedGrid"><select id="presetListA"></select><button class="secondary" id="loadPresetBtnA" data-i18n="loadToOrderA"></button><select id="presetListB"></select><button class="secondary" id="loadPresetBtnB" data-i18n="loadToOrderB"></button><button class="secondary" id="clearSavedBtn" data-i18n="clearSaved"></button></div>
-<div class="orderGrid"><div class="orderBox"><div class="orderHead"><div class="orderTitleWrap"><div data-i18n="orderA"></div><input class="orderNameInput" id="orderNameA" data-placeholder="orderNamePlaceholderA"></div><span data-i18n="required"></span></div><div id="stepsTableA" class="stepList"></div><div class="controls"><button class="secondary" id="addStepBtnA" data-i18n="addStep"></button><button class="danger" id="resetStepsBtnA" data-i18n="resetSteps"></button></div></div><div class="orderBox"><div class="orderHead"><div class="orderTitleWrap"><div data-i18n="orderB"></div><input class="orderNameInput" id="orderNameB" data-placeholder="orderNamePlaceholderB"></div><span data-i18n="optional"></span></div><div id="stepsTableB" class="stepList"></div><div class="controls"><button class="secondary" id="addStepBtnB" data-i18n="addStep"></button><button class="danger" id="resetStepsBtnB" data-i18n="resetSteps"></button></div></div></div>
-<div class="controls"><button class="secondary" id="saveStepsBtn" data-i18n="saveActiveSteps"></button><button class="primary" id="startAnalysisBtn" data-i18n="startAnalysis"></button></div>
-</section>
+  <section id="setupScreen">
+    <div class="setup-grid">
+      <div class="card pad">
+        <div class="eyebrow">Före mätningen</div>
+        <h1>Förbered processobservationen</h1>
+        <div class="form-grid">
+          <label class="field"><span>PROCESS</span><input id="processName" type="text" placeholder="Ex. Limhjul 1"></label>
+          <label class="field"><span>DATUM</span><input id="processDate" type="date"></label>
+        </div>
+        <div class="checks">
+          <label class="check"><input id="chkOperator" type="checkbox"><div><strong>Operatören är informerad</strong><span>Syftet är att förstå processen och hitta förbättringar, inte att pressa arbetstakten.</span></div></label>
+          <label class="check"><input id="chkFlow" type="checkbox"><div><strong>Normalt processflöde</strong><span>Mät ordinarie arbetssätt utan extra buffert eller förberedelser utanför cykeln.</span></div></label>
+          <label class="check"><input id="chkNormal" type="checkbox"><div><strong>Standardiserat arbetssätt</strong><span>Operatören ska arbeta normalt och inte ändra tempot för att tidtagning pågår.</span></div></label>
+        </div>
+      </div>
 
-<section id="trackerScreen" class="screen hidden">
-<div class="screenHeader"><div><h2 data-i18n="liveTitle"></h2><p class="hint" data-i18n="liveHint"></p></div><div class="statusPill" id="livePill"></div></div>
-<div class="analysisNote"><strong>Process:</strong> <span id="processNameView"></span> | <strong>Date:</strong> <span id="processDateView"></span> | <span class="activeOrder" id="activeOrderView"></span></div>
-<div class="controls"><button class="primary" id="switchOrderBtn" data-i18n="switchOrder"></button><button class="secondary" id="pauseBtn" data-i18n="pause"></button><button class="primary" id="finishBtn" data-i18n="finish"></button><button class="secondary" id="editStepsBtn" data-i18n="editSteps"></button><button class="danger" id="resetTimesBtn" data-i18n="resetTimes"></button><button class="secondary" id="exportBtn" data-i18n="exportExcel"></button></div>
-<div class="trackerShell"><table id="trackerTableA"></table><table id="trackerTableB" class="hidden"></table></div>
-<div id="mobileCards" class="mobileCards"></div><div id="mobileCycleData" class="mobileCycleData"></div><div id="mobileHistory" class="mobileHistory"></div>
-<div class="fabBar"><button class="primary" id="mobileStartBtn"></button><button class="ghost" id="mobileFinishBtn" data-i18n="finish"></button></div>
-</section>
+      <div class="card pad">
+        <div class="eyebrow">Förvalda steg</div>
+        <h2>Ladda steg från Excel</h2>
+        <div class="source-row">
+          <select id="presetSelect"><option value="">Läser in filer...</option></select>
+          <button id="btnLoadPreset" class="btn primary">Ladda</button>
+        </div>
+        <div class="source-actions">
+          <button id="btnLocalFile" class="btn secondary">Öppna egen Excel</button>
+          <button id="btnStepTemplate" class="btn secondary">Exportera stegmall</button>
+        </div>
+        <input id="localFile" class="hidden" type="file" accept=".xlsx,.xls">
+        <div id="sourceStatus" class="help">Excel-filen ska ha tabellen <b>Tabell1</b> med kolumnerna <b>Steg</b> och <b>Moment</b>. Filnamnet blir namnet som visas i listan, exempelvis <b>Limhjul.xlsx</b>.</div>
+      </div>
+    </div>
 
-<section id="resultScreen" class="screen hidden">
-<div class="screenHeader"><div><h2 data-i18n="resultTitle"></h2><p class="hint" data-i18n="resultHint"></p></div></div>
-<div class="results"><div class="summaryGrid"><div class="metric"><div class="metricLabel" data-i18n="cyclesMeasured"></div><div class="metricValue" id="resCycles">0</div></div><div class="metric"><div class="metricLabel" data-i18n="avgCycle"></div><div class="metricValue" id="resAvg">00:00:00</div></div><div class="metric"><div class="metricLabel" data-i18n="bottleneck"></div><div class="metricValue" id="resBottle">-</div></div><div class="metric"><div class="metricLabel" data-i18n="vaShare"></div><div class="metricValue" id="resVaShare">0%</div></div></div><div class="chartBox"><strong data-i18n="chartTitle"></strong><div id="bars" class="bars"></div></div><div class="chartBox"><strong data-i18n="wasteTitle"></strong><div class="wasteGrid"><div class="wasteItem wasteVA"><span>VA</span><strong id="sumVA">0%</strong></div><div class="wasteItem wasteNNVA"><span>NNVA</span><strong id="sumNNVA">0%</strong></div><div class="wasteItem wasteNVA"><span>NVA</span><strong id="sumNVA">0%</strong></div></div></div></div>
-<div class="controls"><button class="secondary" id="backTrackerBtn" data-i18n="backTracker"></button><button class="secondary" id="exportBtn2" data-i18n="exportExcel"></button><button class="primary" id="newAnalysisBtn" data-i18n="newAnalysis"></button></div>
-</section>
+    <div class="card steps-card">
+      <div class="card-head">
+        <div><div class="eyebrow">Stegordning</div><h2>En aktivitetsföljd</h2><div class="help">Redigera moment, klassificera dem och ändra ordningen innan mätningen startar.</div></div>
+        <div class="card-head-actions">
+          <button id="btnAddStep" class="btn secondary">+ Steg</button>
+          <button id="btnClearSteps" class="btn secondary">Rensa</button>
+          <button id="btnSaveSetup" class="btn secondary">Spara lokalt</button>
+        </div>
+      </div>
+      <div id="stepList" class="step-list"></div>
+      <div class="setup-footer"><div id="stepCount" class="step-count">0 steg</div><button id="btnStart" class="btn primary big">Starta mätning</button></div>
+    </div>
+  </section>
+
+  <section id="liveScreen" class="hidden">
+    <div class="card live-top">
+      <div class="live-head">
+        <div class="live-title"><div class="eyebrow">Pågående observation</div><h2 id="liveProcess">–</h2><div id="liveMeta" class="muted compact"></div></div>
+        <div class="live-actions">
+          <button id="btnPause" class="btn secondary">Pausa</button>
+          <button id="btnStop" class="btn secondary">Stoppa</button>
+          <button id="btnFinish" class="btn primary">Avsluta</button>
+        </div>
+      </div>
+      <div class="live-kpis">
+        <div class="kpi timer"><span>AKTUELL STEGTID</span><strong id="timer" class="timer-value">00:00.00</strong></div>
+        <div class="kpi"><span>CYKEL</span><strong id="liveCycle">1</strong></div>
+        <div class="kpi"><span>STEG</span><strong id="liveStepNo">1 / 1</strong></div>
+        <div class="kpi"><span>KLARA CYKLER</span><strong id="liveCompleted">0</strong></div>
+      </div>
+    </div>
+
+    <div class="live-layout">
+      <div class="live-main">
+        <div class="card live-step-card">
+          <div id="liveStepList" class="live-step-list"></div>
+          <div class="next-bar">
+            <button id="btnNext" class="btn primary big">Start</button>
+            <button id="btnEditStepsLive" class="btn secondary">Redigera steg</button>
+          </div>
+          <div class="help">Mellanslag = start / nästa steg. När sista steget sparas startar nästa cykel direkt.</div>
+        </div>
+      </div>
+      <aside class="live-side">
+        <div class="card side-card"><div class="card-head"><h3>Cykelhistorik</h3><span class="muted compact">Klicka × för att exkludera</span></div><div id="historyList" class="history-list"></div></div>
+        <div class="card side-card"><h3>Lean-klassificering</h3><div class="help">VA = värdeskapande · NNVA = nödvändigt men ej värdeskapande · NVA = slöseri.</div></div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="resultScreen" class="hidden">
+    <div class="card pad">
+      <div class="eyebrow">Resultat</div>
+      <h1 id="resultTitle">Processobservation</h1>
+      <div id="resultMeta" class="help"></div>
+    </div>
+    <div class="summary-kpis">
+      <div class="card summary-kpi"><span class="muted compact">CYKLER</span><strong id="resCycles">0</strong></div>
+      <div class="card summary-kpi"><span class="muted compact">MEDEL CYKELTID</span><strong id="resAvg">–</strong></div>
+      <div class="card summary-kpi"><span class="muted compact">FLASKHALS</span><strong id="resBottle">–</strong></div>
+      <div class="card summary-kpi"><span class="muted compact">VA-ANDEL</span><strong id="resVA">0%</strong></div>
+    </div>
+    <div class="result-grid">
+      <div class="card chart-card"><div class="card-head"><h2>Medeltid per steg</h2><span class="muted compact">Endast kompletta, inkluderade cykler</span></div><div id="resultBars" class="bars"></div></div>
+      <div class="card class-card"><h2>Lean-fördelning</h2><div class="class-grid"><div class="class-box va"><span>VA</span><strong id="classVA">0%</strong></div><div class="class-box nnva"><span>NNVA</span><strong id="classNNVA">0%</strong></div><div class="class-box nva"><span>NVA</span><strong id="classNVA">0%</strong></div></div></div>
+    </div>
+    <div class="result-actions">
+      <button id="btnBackLive" class="btn secondary">Tillbaka till mätning</button>
+      <button id="btnExcel" class="btn secondary">Excelrapport</button>
+      <button id="btnPdf" class="btn secondary">PDF-rapport</button>
+      <button id="btnNew" class="btn primary">Ny observation</button>
+    </div>
+  </section>
 </div>
+<div id="toast" class="toast hidden" role="status"></div>
 
 <script>
-(()=>{"use strict";
-const tr={en:{kicker:"Production performance",appTitle:"Step Timer",defineTitle:"Define process steps",defineHint:"Create one or two process sequences before measuring. Order 1 is required. Order 2 can be used during live measurement.",introTitle:"What to do here",introText:"Enter process steps manually or load saved steps from Excel. During live measurement you can switch between two cycle orders. The active timer is paused before switching.",processNamePlaceholder:"Process name...",orderNamePlaceholderA:"Name for cycle order 1...",orderNamePlaceholderB:"Name for cycle order 2...",stepPlaceholder:"Enter process step...",checkOperatorTitle:"Operator informed",checkOperatorText:"The operator knows that time measurement is being performed and understands why the data is collected.",checkFlowTitle:"One piece flow",checkFlowText:"Measure the normal process flow. The operator should not build extra buffer or prepare material that does not belong to the current cycle.",checkNormalTitle:"Normal work method",checkNormalText:"Use the standard work method. Do not speed up, slow down or change the process only because timing is active.",checkRequired:"Confirm the checklist before starting.",refreshStepFiles:"Refresh list",loadToOrderA:"Load to 1",loadToOrderB:"Load to 2",clearSaved:"Clear saved",presetBlank:"Blank",presetLH:"Limhjul grunduppstättning",orderA:"Cycle order 1",orderB:"Cycle order 2",required:"Required",optional:"Optional",saveActiveSteps:"Save active steps",addStep:"Add step",resetSteps:"Reset steps",startAnalysis:"Start analysis",liveTitle:"Live measurement",liveHint:"Space or Next continues the active cycle order. Invalid times are excluded from results and export.",switchOrder:"Switch cycle order",pause:"Pause",resume:"Resume",stop:"Stop",finish:"Finish",editSteps:"Edit steps",resetTimes:"Reset",exportExcel:"Export",resultTitle:"Analysis result",resultHint:"Average time per process step. Invalid times are excluded.",cyclesMeasured:"Cycles",avgCycle:"Avg cycle",bottleneck:"Bottleneck",vaShare:"VA share",chartTitle:"Average time by step",wasteTitle:"Lean classification",backTracker:"Back",newAnalysis:"New",ready:"Ready",cycle:"Cycle",step:"Step",processStep:"Process step",type:"Type",average:"Average",totalCycleTime:"Total cycle time",pleaseAdd:"Please add at least one process step in cycle order 1.",pleaseAddSecond:"Cycle order 2 has no steps.",deleteTimes:"Delete all times?",editStepsWarning:"This will delete the current measurement and return to the start page.",start:"Start analysis",next:"Next",history:"History",cycleData:"Time data",fileNotFound:"File not found",noStepsFound:"No steps found in the file.",loadError:"Could not load saved steps"},sv:{kicker:"Produktionsprestanda",appTitle:"Step Timer",defineTitle:"Definiera processteg",defineHint:"Skapa en eller två stegordningar innan du mäter. Stegordning 1 krävs. Stegordning 2 kan användas under live mätning.",introTitle:"Vad du gör här",introText:"Skriv processteg manuellt eller ladda sparade steg från Excel. Under live mätning kan du växla mellan två stegordningar. Aktiv timer pausas innan växling.",processNamePlaceholder:"Processnamn...",orderNamePlaceholderA:"Namn för stegordning 1...",orderNamePlaceholderB:"Namn för stegordning 2...",stepPlaceholder:"Skriv processteg...",checkOperatorTitle:"Operatören är informerad",checkOperatorText:"Operatören vet att tidtagning sker och förstår varför data samlas in.",checkFlowTitle:"Enstycksflöde",checkFlowText:"Mät det normala processflödet. Operatören ska inte bygga extra buffert eller förbereda material som inte hör till aktuell cykel.",checkNormalTitle:"Normalt arbetssätt",checkNormalText:"Använd standardiserat arbetssätt. Ändra inte processen bara för att tidtagning sker.",checkRequired:"Bekräfta checklistan innan du startar.",refreshStepFiles:"Uppdatera lista",loadToOrderA:"Ladda till 1",loadToOrderB:"Ladda till 2",clearSaved:"Rensa sparat",presetBlank:"Tom",presetLH2:"Enkelkörning LH2",orderA:"Stegordning 1",orderB:"Stegordning 2",required:"Krävs",optional:"Valfri",saveActiveSteps:"Spara aktiva steg",addStep:"Lägg till steg",resetSteps:"Nollställ steg",startAnalysis:"Starta analys",liveTitle:"Live mätning",liveHint:"Space eller Nästa fortsätter aktiv stegordning. Överstrukna tider tas bort från resultat och export.",switchOrder:"Växla stegordning",pause:"Pausa",resume:"Fortsätt",stop:"Stopp",finish:"Avsluta",editSteps:"Ändra steg",resetTimes:"Nollställ",exportExcel:"Export",resultTitle:"Analysresultat",resultHint:"Genomsnittlig tid per processteg. Ogiltiga tider räknas bort.",cyclesMeasured:"Cykler",avgCycle:"Snittcykel",bottleneck:"Flaskhals",vaShare:"VA andel",chartTitle:"Genomsnittlig tid per steg",wasteTitle:"Lean klassning",backTracker:"Tillbaka",newAnalysis:"Ny",ready:"Redo",cycle:"Cykel",step:"Steg",processStep:"Processteg",type:"Typ",average:"Snitt",totalCycleTime:"Total cykeltid",pleaseAdd:"Lägg till minst ett processteg i stegordning 1.",pleaseAddSecond:"Stegordning 2 saknar steg.",deleteTimes:"Radera alla tider?",editStepsWarning:"Detta raderar nuvarande mätning och tar dig tillbaka till startsidan.",start:"Starta analys",next:"Nästa",history:"Historik",cycleData:"Tidsdata",fileNotFound:"Filen hittades inte",noStepsFound:"Inga arbetssteg hittades i filen.",loadError:"Kunde inte ladda sparade steg"}};
-let lang="en",activeIndex=0,pName="",pDate="",dirty=false,drag=null;
-const STORAGE_KEY="stepTimerStateV3";
+(function(){
+"use strict";
 
-
-const PRESETS = {
-  blank: {
-    labelKey: "presetBlank",
-    steps: []
-  },
-
-  lhVersion1: {
-    labelKey: "presetLHVersion1",
-    steps: [
-      "Hämta material",
-      "Förbered material (ta bort folie och montera etikett/distans)",
-      "Vänta",
-      "Placera material på avblåsningsbord och rengör",
-      "Vänta",
-      "Ladda maskinen",
-      "Avsyna ruta",
-      "Placera i vagn"
-    ]
-  },
-
-  lhVersion2: {
-    labelKey: "presetLHVersion2",
-    steps: [
-      "Hämta material",
-      "Förbered material (ta bort folie och montera etikett/distans)",
-      "Placera material på avblåsningsbord och rengör",
-      "Vänta",
-      "Ladda maskinen",
-      "Avsyna ruta",
-      "Placera i vagn"
-    ]
-  },
-
-  lhVersion3: {
-    labelKey: "presetLHVersion3",
-    steps: [
-      "Hämta material",
-      "Förbered material (ta bort folie och montera etikett/distans)",
-      "Vänta",
-      "Placera material på avblåsningsbord och rengör",
-      "Ladda maskinen",
-      "Avsyna ruta",
-      "Placera i vagn"
-    ]
-  }
+var $=function(id){return document.getElementById(id);};
+var STORAGE="steptimer_v4_setup";
+var THEME="steptimer_theme";
+var state={
+  process:"",date:"",steps:[],cycles:[],currentCycle:0,currentStep:0,
+  running:false,paused:false,startedAt:0,elapsed:0,timerHandle:null
 };
 
+function toast(msg){
+  $("toast").textContent=msg;
+  $("toast").classList.remove("hidden");
+  clearTimeout(toast.t);
+  toast.t=setTimeout(function(){$("toast").classList.add("hidden");},2200);
+}
+function fmt(ms){
+  if(!isFinite(ms)||ms<0)ms=0;
+  var min=Math.floor(ms/60000);
+  var sec=Math.floor((ms%60000)/1000);
+  var cs=Math.floor((ms%1000)/10);
+  return String(min).padStart(2,"0")+":"+String(sec).padStart(2,"0")+"."+String(cs).padStart(2,"0");
+}
+function fmtSec(ms){return (ms/1000).toFixed(2)+" s";}
+function safeName(s){return String(s||"rapport").replace(/[\\/:*?"<>|]+/g,"_").replace(/\s+/g,"_").slice(0,70);}
+function setScreen(name){
+  $("setupScreen").classList.toggle("hidden",name!=="setup");
+  $("liveScreen").classList.toggle("hidden",name!=="live");
+  $("resultScreen").classList.toggle("hidden",name!=="result");
+}
+function applyTheme(theme){
+  document.documentElement.setAttribute("data-theme",theme);
+  localStorage.setItem(THEME,theme);
+  $("btnTheme").textContent=theme==="dark"?"☀":"☾";
+  document.querySelector('meta[name="theme-color"]').setAttribute("content",theme==="dark"?"#0b1020":"#f7f7f9");
+}
+function toggleTheme(){applyTheme(document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark");}
 
-      
-const orders=[makeOrder("A","orderA"),makeOrder("B","orderB")];
-const $=id=>document.getElementById(id),T=k=>tr[lang][k]||tr.en[k]||k,esc=v=>String(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])),fmt=ms=>{let sec=Math.floor(ms/1000),m=Math.floor(sec/60),s=sec%60,cs=Math.floor(ms%1000/10);return`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}:${String(cs).padStart(2,"0")}`},parse=x=>{if(!x||x==="-")return 0;let p=String(x).split(":").map(Number);return p.length===3&&!p.some(Number.isNaN)?(p[0]*60+p[1])*1000+p[2]*10:0},csv=v=>{let s=String(v??"");return/[;"\n]/.test(s)?`"${s.replaceAll('"','""')}"`:s};
-function makeOrder(key,titleKey){return{key,titleKey,name:"",steps:[],table:null,currentStep:0,currentCycle:0,startTime:null,timer:null,paused:false,elapsedBeforePause:0,enabled:false}}
-function active(){return orders[activeIndex]}function orderLabel(o){return o.name||T(o.titleKey)}function markDirty(){dirty=true}function status(x){$("statusPill").textContent=x;if($("livePill"))$("livePill").textContent=x}
-function langSet(l){lang=l;document.documentElement.lang=l;$("btnEN").classList.toggle("active",l==="en");$("btnSV").classList.toggle("active",l==="sv");document.querySelectorAll("[data-i18n]").forEach(e=>e.textContent=T(e.dataset.i18n));document.querySelectorAll("[data-placeholder]").forEach(e=>e.placeholder=T(e.dataset.placeholder));document.querySelectorAll(".stepType").forEach(e=>typeSel(e,e.value));$("pauseBtn").textContent=active().paused?T("resume"):T("pause");$("mobileStartBtn").textContent=T("start");updateActiveView();status(active().table?`${T("cycle")} ${active().currentCycle+1}`:T("ready"))}
-function typeSel(s,v="VA"){s.innerHTML='<option value="VA">🟢 VA</option><option value="NNVA">🟡 NNVA</option><option value="NVA">🔴 NVA</option>';s.value=v;s.className=s.className.includes("analysisType")?"stepType analysisType type"+v:s.className.includes("mobileType")?"stepType mobileType type"+v:"stepType type"+v}
-function stepRow(n="",ty="VA"){let r=document.createElement("div");r.className="stepRow";r.draggable=true;r.innerHTML=`<div class="stepNo"></div><input data-placeholder="stepPlaceholder" placeholder="${T("stepPlaceholder")}" value="${esc(n)}"><select class="stepType"></select><div class="dragHandle">☰</div>`;typeSel(r.querySelector("select"),ty);return r}
-function renum(boxId){document.querySelectorAll(`#${boxId} .stepRow`).forEach((r,i)=>r.querySelector(".stepNo").textContent=i+1)}
-function addStep(boxId,n="",ty="VA",focus=true){$(boxId).appendChild(stepRow(n,ty));renum(boxId);markDirty();saveState();let rows=document.querySelectorAll(`#${boxId} .stepRow`);if(focus)rows[rows.length-1].querySelector("input").focus()}
-function resetSteps(boxId){$(boxId).innerHTML="";addStep(boxId);saveState()}
-function readSteps(boxId){return[...document.querySelectorAll(`#${boxId} .stepRow`)].map(r=>({name:r.querySelector("input").value.trim(),type:r.querySelector("select").value})).filter(x=>x.name)}
-function fillPresetSelects(){["A","B"].forEach(key=>{let sel=$("presetList"+key);sel.innerHTML="";Object.entries(PRESETS).forEach(([id,p])=>{let opt=document.createElement("option");opt.value=id;opt.textContent=T(p.labelKey);sel.appendChild(opt)})})}
-function loadPreset(target){let sel=$("presetList"+target),box=target==="A"?"stepsTableA":"stepsTableB",preset=PRESETS[sel.value]||PRESETS.blank;$(box).innerHTML="";if(preset.steps.length)preset.steps.forEach(x=>addStep(box,x,"VA",false));else addStep(box,"","VA",false);saveState()}
-function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify({processName:$("processName")?.value||"",processDate:$("processDate")?.value||"",orderNameA:$("orderNameA")?.value||"",orderNameB:$("orderNameB")?.value||"",stepsA:readSteps("stepsTableA"),stepsB:readSteps("stepsTableB")}))}catch(e){}}
-function restoreState(){try{let raw=localStorage.getItem(STORAGE_KEY);if(!raw)return false;let s=JSON.parse(raw);$("processName").value=s.processName||"";$("processDate").value=s.processDate||new Date().toISOString().slice(0,10);$("orderNameA").value=s.orderNameA||"Cycle order 1";$("orderNameB").value=s.orderNameB||"Cycle order 2";[["stepsTableA",s.stepsA],["stepsTableB",s.stepsB]].forEach(([box,list])=>{$(box).innerHTML="";(Array.isArray(list)&&list.length?list:[{name:"",type:"VA"}]).forEach(x=>addStep(box,x.name||"",x.type||"VA",false))});return true}catch(e){return false}}
-function clearSavedState(){localStorage.removeItem(STORAGE_KEY);$("processName").value="";$("processDate").value=new Date().toISOString().slice(0,10);$("orderNameA").value="Cycle order 1";$("orderNameB").value="Cycle order 2";$("stepsTableA").innerHTML="";$("stepsTableB").innerHTML="";addStep("stepsTableA","","VA",false);addStep("stepsTableB","","VA",false);saveState()}
-function startAnalysis(){markDirty();orders[0].steps=readSteps("stepsTableA");orders[1].steps=readSteps("stepsTableB");orders[0].name=$("orderNameA").value.trim();orders[1].name=$("orderNameB").value.trim();if(!orders[0].steps.length)return alert(T("pleaseAdd"));if(!$("chkOperator").checked||!$("chkFlow").checked||!$("chkNormal").checked)return alert(T("checkRequired"));pName=$("processName").value.trim();pDate=$("processDate").value;$("processNameView").textContent=pName||"-";$("processDateView").textContent=pDate||"-";$("welcomeScreen").classList.add("hidden");$("resultScreen").classList.add("hidden");$("trackerScreen").classList.remove("hidden");orders.forEach((o,i)=>{o.table=$("trackerTable"+o.key);o.enabled=o.steps.length>0;o.currentStep=0;o.currentCycle=0;o.startTime=null;o.paused=false;o.elapsedBeforePause=0;clearInterval(o.timer);if(o.enabled)build(o,1);else o.table.innerHTML=""});activeIndex=0;updateActiveView();status(`${T("cycle")} 1`)}
-function build(o,c=1){o.table.innerHTML="";let h=o.table.insertRow();h.innerHTML=`<th>#</th><th>${T("processStep")}</th>`;for(let i=1;i<=c;i++)h.appendChild(cycleHead(o,i));let a=document.createElement("th");a.textContent=T("average");a.className="average";h.appendChild(a);o.steps.forEach((s,i)=>rowAdd(o,i,s,c));footer(o,c)}
-function cycleHead(o,n){let th=document.createElement("th");th.innerHTML=`<div>${T("cycle")} ${n}</div>`;let b=document.createElement("button");b.className="deleteCol";b.textContent="×";b.onclick=ev=>{ev.stopPropagation();delCol(o,[...o.table.rows[0].cells].indexOf(th))};th.appendChild(b);return th}
-function rowAdd(o,i,s,c){let r=o.table.insertRow();r.insertCell().textContent=i+1;let n=r.insertCell();n.innerHTML=`${esc(s.name)} <select class="stepType analysisType" data-order="${o.key}" data-step="${i}"><option>VA</option><option>NNVA</option><option>NVA</option></select>`;typeSel(n.querySelector("select"),s.type);for(let j=0;j<c;j++){let td=r.insertCell();td.className="timeCell"}let a=r.insertCell();a.className="average"}
-function footer(o,c){let r=o.table.insertRow();r.className="totalRow";r.insertCell();r.insertCell().textContent=T("totalCycleTime");for(let i=0;i<c;i++)r.insertCell();r.insertCell()}
-function countCycles(o){return o.table?o.table.rows[0].cells.length-3:0}
-function rebuild(o){if(!o.enabled)return;let c=Math.max(1,countCycles(o)),old=o.steps.map((_,i)=>[...o.table.rows[i+1].cells].slice(2,-1).map(x=>({t:x.textContent,inv:x.classList.contains("invalid")})));build(o,c);old.forEach((r,i)=>r.forEach((v,j)=>{let cell=o.table.rows[i+1].cells[j+2];cell.textContent=v.t;if(v.inv)cell.classList.add("invalid")}));o.steps.forEach((_,i)=>avg(o,i));totals(o)}
-function startStep(o=active()){if(!o.enabled)return;o.paused=false;o.elapsedBeforePause=0;o.startTime=Date.now();$("pauseBtn").textContent=T("pause");$("mobileStartBtn").textContent=T("next");status(`${T("cycle")} ${o.currentCycle+1} · ${T("step")} ${o.currentStep+1}`);o.timer=setInterval(()=>{let cell=o.table.rows[o.currentStep+1]?.cells[o.currentCycle+2];if(!cell){safeNewCycle(o);cell=o.table.rows[o.currentStep+1].cells[o.currentCycle+2]}cell.textContent=fmt(o.elapsedBeforePause+Date.now()-o.startTime);cell.classList.add("running");if(o===active())cards()},100)}
-function endStep(o=active()){clearInterval(o.timer);let c=o.table?.rows[o.currentStep+1]?.cells[o.currentCycle+2];if(c)c.classList.remove("running")}
-function pauseOrder(o=active()){if(o.startTime!==null&&!o.paused){o.elapsedBeforePause+=Date.now()-o.startTime;clearInterval(o.timer);o.startTime=null;o.paused=true;let c=o.table.rows[o.currentStep+1]?.cells[o.currentCycle+2];if(c)c.classList.remove("running");if(o===active()){$("pauseBtn").textContent=T("resume");status(`${T("pause")} · ${T("cycle")} ${o.currentCycle+1} · ${T("step")} ${o.currentStep+1}`);cards()}return true}return false}
-function pauseAnalysis(){let o=active();if(!o.enabled)return;if(pauseOrder(o))return;if(o.paused){o.paused=false;o.startTime=Date.now();$("pauseBtn").textContent=T("pause");o.timer=setInterval(()=>{let cell=o.table.rows[o.currentStep+1]?.cells[o.currentCycle+2];if(!cell){safeNewCycle(o);cell=o.table.rows[o.currentStep+1].cells[o.currentCycle+2]}cell.textContent=fmt(o.elapsedBeforePause+Date.now()-o.startTime);cell.classList.add("running");cards()},100);status(`${T("cycle")} ${o.currentCycle+1} · ${T("step")} ${o.currentStep+1}`)}}
-function next(){let o=active();if(!o.enabled)return;if(o.paused){pauseAnalysis();return}endStep(o);let cell=o.table.rows[o.currentStep+1]?.cells[o.currentCycle+2];if(cell?.textContent)avg(o,o.currentStep);o.currentStep++;if(o.currentStep>=o.steps.length){finishCycle(o);o.currentStep=0;o.currentCycle++;addCycle(o,o.currentCycle+1)}cards();startStep(o)}
-function mobileStartNext(){let o=active();if(o.startTime===null&&!o.paused?startStep(o):next())return}
-function finishCycle(o){let total=0;for(let i=0;i<o.steps.length;i++){let c=o.table.rows[i+1].cells[o.currentCycle+2];if(c?.textContent&&!c.classList.contains("invalid"))total+=parse(c.textContent)}o.table.rows[o.steps.length+1].cells[o.currentCycle+2].textContent=total?fmt(total):""}
-function addCycle(o,n){let h=o.table.rows[0];h.insertBefore(cycleHead(o,n),h.cells[h.cells.length-1]);for(let i=0;i<o.steps.length;i++){let td=document.createElement("td");td.className="timeCell";o.table.rows[i+1].insertBefore(td,o.table.rows[i+1].lastChild)}o.table.rows[o.steps.length+1].insertBefore(document.createElement("td"),o.table.rows[o.steps.length+1].lastChild);if(o===active())status(`${T("cycle")} ${n}`)}
-function safeNewCycle(o){let cycles=countCycles(o);if(cycles===0){build(o,1);o.currentCycle=0;o.currentStep=0;return}if(o.currentCycle>=cycles){addCycle(o,cycles+1);o.currentCycle=cycles;o.currentStep=0}}
-function avg(o,i){let r=o.table.rows[i+1],arr=[...r.cells].slice(2,-1).filter(c=>c.textContent&&!c.classList.contains("invalid")).map(c=>parse(c.textContent));r.lastChild.textContent=arr.length>=2?fmt(arr.reduce((a,b)=>a+b,0)/arr.length):""}
-function totals(o){for(let c=0;c<countCycles(o);c++){let total=0;for(let i=0;i<o.steps.length;i++){let cell=o.table.rows[i+1].cells[c+2];if(cell?.textContent&&!cell.classList.contains("invalid"))total+=parse(cell.textContent)}o.table.rows[o.steps.length+1].cells[c+2].textContent=total?fmt(total):""}}
-function delCol(o,i){if(i<=1||i>=o.table.rows[0].cells.length-1)return;let deletingCurrent=(i-2)===o.currentCycle;if(deletingCurrent){pauseOrder(o);endStep(o);o.startTime=null;o.paused=false;o.elapsedBeforePause=0}for(let r=0;r<o.table.rows.length;r++)o.table.rows[r].deleteCell(i);if(countCycles(o)===0){build(o,1);o.currentStep=0;o.currentCycle=0}else if(deletingCurrent){o.currentCycle=countCycles(o);o.currentStep=0;addCycle(o,o.currentCycle+1)}else if(i-2<o.currentCycle){o.currentCycle=Math.max(0,o.currentCycle-1)}o.steps.forEach((_,x)=>avg(o,x));totals(o);if(o===active()){$("pauseBtn").textContent=T("pause");$("mobileStartBtn").textContent=T("start");cards();status(`${T("cycle")} ${o.currentCycle+1}`)}}
-function stopAnalysis(){let o=active();endStep(o);o.startTime=null;o.paused=false;o.elapsedBeforePause=0;$("pauseBtn").textContent=T("pause");$("mobileStartBtn").textContent=T("start");status(`${T("stop")} · ${T("cycle")} ${o.currentCycle+1}`);cards()}
-function resetTimes(){if(!confirm(T("deleteTimes")))return;orders.forEach(o=>{if(!o.enabled)return;endStep(o);o.currentStep=0;o.currentCycle=0;o.startTime=null;o.paused=false;o.elapsedBeforePause=0;build(o,1)});$("pauseBtn").textContent=T("pause");$("mobileStartBtn").textContent=T("start");status(`${T("cycle")} 1`);cards()}
-function editSteps(){orders.forEach(o=>{if(o.startTime!==null||o.paused)pauseOrder(o);endStep(o)});if(!confirm(T("editStepsWarning")))return;$("stepsTableA").innerHTML="";orders[0].steps.forEach(s=>addStep("stepsTableA",s.name,s.type,false));if(!orders[0].steps.length)addStep("stepsTableA","","VA",false);$("stepsTableB").innerHTML="";orders[1].steps.forEach(s=>addStep("stepsTableB",s.name,s.type,false));if(!orders[1].steps.length)addStep("stepsTableB","","VA",false);orders.forEach(o=>{o.table=null;o.enabled=false});$("trackerScreen").classList.add("hidden");$("resultScreen").classList.add("hidden");$("welcomeScreen").classList.remove("hidden");status(T("ready"))}
-function finalizeActiveCell(o){
- if(!o.enabled)return;
- if(o.startTime!==null){
-  o.elapsedBeforePause+=Date.now()-o.startTime;
-  let cell=o.table.rows[o.currentStep+1]?.cells[o.currentCycle+2];
-  if(cell){
-   cell.textContent=fmt(o.elapsedBeforePause);
-   cell.classList.remove("running");
-   avg(o,o.currentStep);
-   totals(o);
+function defaultSteps(){
+  return [
+    {name:"Hämta material",type:"VA"},
+    {name:"Placera på bord",type:"VA"},
+    {name:"Ladda maskin",type:"VA"},
+    {name:"Rengör",type:"NNVA"},
+    {name:"Pussa",type:"VA"},
+    {name:"Förbered etikett",type:"NNVA"}
+  ];
+}
+function editorSteps(){
+  var rows=[].slice.call(document.querySelectorAll("#stepList .step-row"));
+  return rows.map(function(r){
+    return {name:r.querySelector(".step-name").value.trim(),type:r.querySelector(".step-type").value};
+  }).filter(function(s){return s.name;});
+}
+function rowClass(type){return "step-row type-"+type;}
+function renderSteps(){
+  var box=$("stepList");
+  if(!state.steps.length){
+    box.innerHTML='<div class="help" style="padding:18px;text-align:center;border:1px dashed var(--line);border-radius:10px">Inga steg. Lägg till ett steg eller ladda en Excel-fil.</div>';
+    $("stepCount").textContent="0 steg";
+    return;
   }
- }
- clearInterval(o.timer);
- o.startTime=null;
- o.paused=false;
- o.elapsedBeforePause=0;
-}
-function moveToNewColumnTop(o){
- if(!o.enabled)return;
- clearInterval(o.timer);
- o.startTime=null;
- o.paused=false;
- o.elapsedBeforePause=0;
- o.currentStep=0;
- o.currentCycle=countCycles(o);
- addCycle(o,o.currentCycle+1);
-}
-function switchOrder(){
-    let current=active();
-    let other=activeIndex===0?1:0;
-
-    if(!orders[other].enabled){
-        return alert(T("pleaseAddSecond"));
-    }
-
-    pauseOrder(current);
-    endStep(current);
-
-    let currentCell=current.table
-        ?.rows[current.currentStep+1]
-        ?.cells[current.currentCycle+2];
-
-    let hasData=currentCell && currentCell.textContent.trim()!=="";
-
-    if(hasData){
-        let cycles=countCycles(current);
-
-        if(current.currentCycle>=cycles-1){
-            addCycle(current,cycles+1);
-        }
-
-        current.currentCycle++;
-    }
-
-    current.currentStep=0;
-    current.startTime=null;
-    current.paused=false;
-    current.elapsedBeforePause=0;
-
-    activeIndex=other;
-
-    let target=active();
-
-    let targetCycles=countCycles(target);
-
-    if(targetCycles===0){
-        build(target,1);
-    }
-
-    let targetCell=target.table
-        ?.rows[target.currentStep+1]
-        ?.cells[target.currentCycle+2];
-
-    let targetHasData=targetCell &&
-        targetCell.textContent.trim()!=="";
-
-    if(targetHasData){
-
-        if(target.currentCycle>=targetCycles-1){
-            addCycle(target,targetCycles+1);
-        }
-
-        target.currentCycle++;
-    }
-
-    target.currentStep=0;
-
-    updateActiveView();
-    cards();
-
-    status(
-        `${orderLabel(target)} · ${T("cycle")} ${target.currentCycle+1}`
-    );
-}
-function updateActiveView(){let o=active();if($("trackerTableA")){$("trackerTableA").classList.toggle("hidden",activeIndex!==0);$("trackerTableB").classList.toggle("hidden",activeIndex!==1);$("activeOrderView").textContent=orderLabel(o);$("pauseBtn").textContent=o.paused?T("resume"):T("pause");$("mobileStartBtn").textContent=o.startTime===null&&!o.paused?T("start"):T("next")}}
-function allData(){let arr=[];orders.forEach(o=>{if(!o.enabled)return;arr.push(...o.steps.map((s,i)=>{let cells=[...o.table.rows[i+1].cells].slice(2,-1),vals=cells.filter(c=>c.textContent&&!c.classList.contains("invalid")).map(c=>parse(c.textContent));return{order:orderLabel(o),name:s.name,type:s.type,ms:vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:0}}))});return arr}
-function waste(d){let total=d.reduce((a,b)=>a+b.ms,0)||1,sum={VA:0,NNVA:0,NVA:0};d.forEach(x=>sum[x.type]+=x.ms);return{VA:Math.round(sum.VA/total*100),NNVA:Math.round(sum.NNVA/total*100),NVA:Math.round(sum.NVA/total*100)}}
-function finish(){markDirty();orders.forEach(o=>{if(!o.enabled)return;if(o.startTime!==null||o.paused)pauseOrder(o);endStep(o);totals(o)});let d=allData(),tot=[];orders.forEach(o=>{if(!o.enabled)return;tot.push(...[...o.table.rows[o.steps.length+1].cells].slice(2,-1).map(c=>parse(c.textContent)).filter(Boolean))});let w=waste(d);$("trackerScreen").classList.add("hidden");$("resultScreen").classList.remove("hidden");$("resCycles").textContent=tot.length;$("resAvg").textContent=tot.length?fmt(tot.reduce((a,b)=>a+b,0)/tot.length):"00:00:00";let b=d.slice().sort((a,b)=>b.ms-a.ms)[0];$("resBottle").textContent=b&&b.ms?b.name:"-";$("resVaShare").textContent=w.VA+"%";$("sumVA").textContent=w.VA+"%";$("sumNNVA").textContent=w.NNVA+"%";$("sumNVA").textContent=w.NVA+"%";let max=Math.max(...d.map(x=>x.ms),1);$("bars").innerHTML=d.map(x=>`<div class="barRow"><div class="barName">${esc(x.order)} · ${esc(x.name)} <span class="badge badge${x.type}">${x.type}</span></div><div class="barTrack"><div class="barFill" style="width:${Math.max(2,x.ms/max*100)}%"></div></div><div class="barValue">${x.ms?fmt(x.ms):"-"}</div></div>`).join("")}
-function cards(){let o=active(),w=$("mobileCards");if(!w||!o.enabled)return;w.innerHTML=o.steps.map((s,i)=>{let c=o.table.rows[i+1].cells[o.currentCycle+2],time=c?.textContent||"";return`<div class="card" style="${i===o.currentStep&&(o.startTime!==null||o.paused)?"border-color:var(--b2)":""}"><div class="cardTop"><div><div class="cardTitle">${i+1}. ${esc(s.name)}</div><div class="cardMeta">${orderLabel(o)} · ${T("cycle")} ${o.currentCycle+1}</div><select class="stepType mobileType" data-order="${o.key}" data-step="${i}"><option ${s.type==="VA"?"selected":""}>VA</option><option ${s.type==="NNVA"?"selected":""}>NNVA</option><option ${s.type==="NVA"?"selected":""}>NVA</option></select></div><div class="mobileTime"><div class="cardTime">${time||"00:00:00"}</div><button class="invalidateIcon" data-row="${i}">🗑</button></div></div></div>`}).join("");cycleData();history()}
-function cycleData(){let o=active(),d=$("mobileCycleData");if(!d||!o.enabled)return;let rows=o.steps.map((s,i)=>`<tr><td>${i+1}. ${esc(s.name)}</td><td>${o.table.rows[i+1].cells[o.currentCycle+2]?.textContent||"-"}</td></tr>`).join("");let total=o.table.rows[o.steps.length+1]?.cells[o.currentCycle+2]?.textContent||"-";d.innerHTML=`<div class="box"><div class="boxTitle">${T("cycleData")} · ${orderLabel(o)} · ${T("cycle")} ${o.currentCycle+1}</div><table class="cycleTable"><tbody>${rows}<tr><th>${T("totalCycleTime")}</th><th>${total}</th></tr></tbody></table></div>`}
-function history(){let o=active(),h=$("mobileHistory");if(!h||!o.enabled)return;let chips=[];for(let c=0;c<countCycles(o);c++){let total=o.table.rows[o.steps.length+1]?.cells[c+2]?.textContent||"";if(total)chips.push(`<span class="chip">${T("cycle")} ${c+1}: ${total}</span>`)}h.innerHTML=chips.length?`<div class="box"><div class="boxTitle">${T("history")}</div><div class="chips">${chips.join("")}</div></div>`:""}
-function exportCsv(){
- orders.forEach(o=>{if(o.enabled)totals(o)});
- const wb=XLSX.utils.book_new();
- const aoa=[];
- aoa.push(["Process",pName,"Date",pDate]);
- aoa.push([]);
- orders.forEach(o=>{
-  if(!o.enabled)return;
-  aoa.push([orderLabel(o)]);
-  let head=["#",T("processStep"),T("type")];
-  for(let c=1;c<=countCycles(o);c++)head.push(`${T("cycle")} ${c}`);
-  head.push(T("average"));
-  aoa.push(head);
-  o.steps.forEach((s,i)=>{
-   let row=[String(i+1),s.name,s.type];
-   for(let c=0;c<countCycles(o);c++){
-    let cell=o.table.rows[i+1].cells[c+2];
-    row.push(cell.classList.contains("invalid")?"":String(cell.textContent||""));
-   }
-   row.push(String(o.table.rows[i+1].lastChild.textContent||""));
-   aoa.push(row);
+  box.innerHTML="";
+  state.steps.forEach(function(s,i){
+    var row=document.createElement("div");
+    row.className=rowClass(s.type);
+    row.dataset.index=String(i);
+    row.innerHTML=
+      '<div class="step-no">'+(i+1)+'</div>'+
+      '<input class="step-name" type="text" value="'+escapeHtml(s.name)+'" aria-label="Moment '+(i+1)+'">'+
+      '<select class="step-type" aria-label="Klassificering"><option value="VA">VA</option><option value="NNVA">NNVA</option><option value="NVA">NVA</option></select>'+
+      '<button class="btn secondary icon-btn step-up" title="Flytta upp">↑</button>'+
+      '<button class="btn secondary icon-btn step-down" title="Flytta ned">↓</button>'+
+      '<button class="btn secondary icon-btn step-delete" title="Ta bort">×</button>';
+    row.querySelector(".step-type").value=s.type;
+    box.appendChild(row);
   });
-  let total=["",T("totalCycleTime"),""];
-  for(let c=0;c<countCycles(o);c++)total.push(String(o.table.rows[o.steps.length+1].cells[c+2].textContent||""));
-  total.push("");
-  aoa.push(total);
-  aoa.push([]);
- });
- let w=waste(allData());
- aoa.push(["VA %",String(w.VA)+"%","NNVA %",String(w.NNVA)+"%","NVA %",String(w.NVA)+"%"]);
- const ws=XLSX.utils.aoa_to_sheet(aoa);
- Object.keys(ws).forEach(addr=>{
-  if(addr[0]==="!")return;
-  ws[addr].t="s";
-  ws[addr].z="@";
- });
- ws["!cols"]=[{wch:8},{wch:52},{wch:12},{wch:14},{wch:14},{wch:14},{wch:14},{wch:14},{wch:14},{wch:14}];
- XLSX.utils.book_append_sheet(wb,ws,"Step Timer");
- XLSX.writeFile(wb,"step_timer_analysis.xlsx");
- dirty=false;
+  $("stepCount").textContent=state.steps.length+" steg";
 }
-async function loadStepFileList(){let selects=[$("savedStepsFileA"),$("savedStepsFileB")];selects.forEach(s=>s.innerHTML=`<option value="">Loading...</option>`);try{let res=await fetch("stepfiles.json",{cache:"no-store"});if(!res.ok)throw new Error("stepfiles.json not found");let files=await res.json();if(!Array.isArray(files)||!files.length)throw new Error("No files in stepfiles.json");let valid=files.filter(x=>String(x).toLowerCase().endsWith(".xlsx"));if(!valid.length)throw new Error("No .xlsx files listed");selects.forEach(sel=>{sel.innerHTML="";valid.forEach(file=>{let opt=document.createElement("option");opt.value=file;opt.textContent=String(file).replace(/\.xlsx$/i,"");sel.appendChild(opt)})})}catch(e){selects.forEach(sel=>sel.innerHTML=`<option value="LH_enkel_op2.xlsx">LH_enkel_op2</option>`);alert(`${T("loadError")}: ${e.message}. Using fallback file.`)}}
-async function loadSavedSteps(target){let file=$(target==="A"?"savedStepsFileA":"savedStepsFileB").value,box=target==="A"?"stepsTableA":"stepsTableB";if(!file)return alert(T("fileNotFound"));try{let res=await fetch(file,{cache:"no-store"});if(!res.ok)throw new Error(T("fileNotFound"));let buf=await res.arrayBuffer();let wb=XLSX.read(buf,{type:"array"});let ws=wb.Sheets[wb.SheetNames[0]];let rows=XLSX.utils.sheet_to_json(ws,{header:1});let list=rows.slice(1).map(r=>String(r[0]||"").trim()).filter(Boolean);if(!list.length)return alert(T("noStepsFound"));$(box).innerHTML="";list.forEach(x=>addStep(box,x,"VA",false));dirty=false}catch(e){alert(`${T("loadError")}: ${e.message}`)}}
-function saveSteps(){let list=active().enabled?active().steps:readSteps("stepsTableA");if(!list.length)return alert(T("pleaseAdd"));let ws=XLSX.utils.aoa_to_sheet([["Arbetssteg"],...list.map(x=>[x.name])]);let wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"Sheet1");XLSX.writeFile(wb,(pName||"saved_steps")+".xlsx")}
-function bind(){[["btnEN",()=>langSet("en")],["btnSV",()=>langSet("sv")],["loadPresetBtnA",()=>loadPreset("A")],["loadPresetBtnB",()=>loadPreset("B")],["clearSavedBtn",clearSavedState],["saveStepsBtn",saveSteps],["addStepBtnA",()=>addStep("stepsTableA")],["addStepBtnB",()=>addStep("stepsTableB")],["resetStepsBtnA",()=>resetSteps("stepsTableA")],["resetStepsBtnB",()=>resetSteps("stepsTableB")],["startAnalysisBtn",startAnalysis],["switchOrderBtn",switchOrder],["pauseBtn",pauseAnalysis],["finishBtn",finish],["editStepsBtn",editSteps],["resetTimesBtn",resetTimes],["exportBtn",exportCsv],["exportBtn2",exportCsv],["mobileStartBtn",mobileStartNext],["mobileFinishBtn",finish],["backTrackerBtn",()=>{$("resultScreen").classList.add("hidden");$("trackerScreen").classList.remove("hidden");updateActiveView();cards()}],["newAnalysisBtn",()=>{$("resultScreen").classList.add("hidden");$("welcomeScreen").classList.remove("hidden");orders.forEach(o=>{o.table=null;o.enabled=false});status(T("ready"))}]].forEach(([id,fn])=>$(id).onclick=fn);
-["stepsTableA","stepsTableB"].forEach(box=>{$(box).addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();addStep(box)}});$(box).addEventListener("input",()=>{markDirty();saveState()});$(box).addEventListener("change",e=>{markDirty();if(e.target.classList.contains("stepType"))typeSel(e.target,e.target.value);saveState()});$(box).addEventListener("dragstart",e=>{drag=e.target.closest(".stepRow");if(drag)drag.classList.add("dragging")});$(box).addEventListener("dragend",()=>{if(drag)drag.classList.remove("dragging");drag=null;renum(box)});$(box).addEventListener("dragover",e=>{e.preventDefault();if(!drag)return;let rows=[...$(box).querySelectorAll(".stepRow:not(.dragging)")],after=rows.reduce((cl,ch)=>{let b=ch.getBoundingClientRect(),o=e.clientY-b.top-b.height/2;return o<0&&o>cl.o?{o,e:ch}:cl},{o:-Infinity}).e;after?$(box).insertBefore(drag,after):$(box).appendChild(drag)})});
-document.addEventListener("change",e=>{if(!e.target.classList.contains("analysisType")&&!e.target.classList.contains("mobileType"))return;let o=orders.find(x=>x.key===e.target.dataset.order),i=+e.target.dataset.step;if(!o)return;o.steps[i].type=e.target.value;typeSel(e.target,e.target.value);markDirty();rebuild(o);cards()});$("processName").addEventListener("input",()=>{markDirty();saveState()});$("processDate").addEventListener("change",()=>{markDirty();saveState()});$("orderNameA").addEventListener("input",()=>{markDirty();saveState()});$("orderNameB").addEventListener("input",()=>{markDirty();saveState()});$("mobileCards").onclick=e=>{let b=e.target.closest(".invalidateIcon");if(!b)return;let o=active(),i=+b.dataset.row,c=o.table.rows[i+1].cells[o.currentCycle+2];if(c.textContent){c.classList.toggle("invalid");avg(o,i);totals(o);cards()}};document.addEventListener("click",e=>{let td=e.target.closest("td");if(!td)return;let tableEl=td.closest("table");let o=orders.find(x=>x.table===tableEl);if(!o||td.cellIndex<2||td.classList.contains("average")||td.parentElement.classList.contains("totalRow")||!td.textContent)return;td.classList.toggle("invalid");avg(o,td.parentElement.rowIndex-1);totals(o);if(o===active())cards()});document.addEventListener("keydown",e=>{if(!$("trackerScreen").classList.contains("hidden")&&e.code==="Space"){e.preventDefault();markDirty();let o=active();o.startTime===null&&!o.paused?startStep(o):next()}});window.addEventListener("beforeunload",e=>{if(!dirty)return;e.preventDefault();e.returnValue=""})}
-function init(){bind();$("processDate").value=new Date().toISOString().slice(0,10);$("orderNameA").value="Cycle order 1";$("orderNameB").value="Cycle order 2";fillPresetSelects();if(!restoreState()){addStep("stepsTableA","","VA",false);addStep("stepsTableB","","VA",false);saveState()}langSet("en");$("mobileStartBtn").textContent=T("start")}
-window.startAnalysis=startAnalysis;document.addEventListener("DOMContentLoaded",init)
+function escapeHtml(s){
+  return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function syncEditor(){
+  state.steps=editorSteps();
+  renderSteps();
+  saveSetup();
+}
+function addStep(){
+  state.steps=editorSteps();
+  state.steps.push({name:"",type:"VA"});
+  renderSteps();
+  var inputs=document.querySelectorAll(".step-name");
+  if(inputs.length)inputs[inputs.length-1].focus();
+}
+function moveStep(i,dir){
+  state.steps=editorSteps();
+  var j=i+dir;
+  if(j<0||j>=state.steps.length)return;
+  var tmp=state.steps[i];state.steps[i]=state.steps[j];state.steps[j]=tmp;
+  renderSteps();saveSetup();
+}
+function deleteStep(i){
+  state.steps=editorSteps();
+  state.steps.splice(i,1);
+  renderSteps();saveSetup();
+}
+function clearSteps(){
+  if(state.steps.length&&!confirm("Rensa alla steg?"))return;
+  state.steps=[];renderSteps();saveSetup();
+}
+function saveSetup(){
+  state.steps=editorSteps().length?editorSteps():state.steps;
+  var data={
+    process:$("processName").value.trim(),
+    date:$("processDate").value,
+    steps:state.steps,
+    checks:[$("chkOperator").checked,$("chkFlow").checked,$("chkNormal").checked]
+  };
+  localStorage.setItem(STORAGE,JSON.stringify(data));
+}
+function restoreSetup(){
+  try{
+    var d=JSON.parse(localStorage.getItem(STORAGE)||"null");
+    if(!d)return false;
+    $("processName").value=d.process||"";
+    $("processDate").value=d.date||new Date().toISOString().slice(0,10);
+    state.steps=Array.isArray(d.steps)&&d.steps.length?d.steps:defaultSteps();
+    if(Array.isArray(d.checks)){
+      $("chkOperator").checked=!!d.checks[0];$("chkFlow").checked=!!d.checks[1];$("chkNormal").checked=!!d.checks[2];
+    }
+    return true;
+  }catch(e){return false;}
+}
+
+async function loadPresetList(){
+  var sel=$("presetSelect");
+  sel.innerHTML='<option value="">Välj förvald process...</option>';
+  try{
+    var res=await fetch("stepfiles.json",{cache:"no-store"});
+    if(!res.ok)throw new Error("stepfiles.json saknas");
+    var files=await res.json();
+    if(!Array.isArray(files))throw new Error("Fel format i stepfiles.json");
+    files.filter(function(f){return /\.xlsx?$/i.test(String(f));}).forEach(function(file){
+      var o=document.createElement("option");o.value=file;o.textContent=String(file).replace(/\.xlsx?$/i,"");sel.appendChild(o);
+    });
+    if(sel.options.length===1)$("sourceStatus").innerHTML='Inga förvalda Excel-filer är registrerade ännu. När <b>Limhjul.xlsx</b> läggs i appen och i <b>stepfiles.json</b> visas den här.';
+  }catch(e){
+    $("sourceStatus").textContent="Kunde inte läsa listan över förvalda filer: "+e.message;
+  }
+}
+function parseWorkbook(buffer,sourceName){
+  var wb=XLSX.read(buffer,{type:"array"});
+  if(!wb.SheetNames.length)throw new Error("Arbetsboken saknar blad.");
+  var preferred=wb.SheetNames.indexOf("Tabell1")>=0?"Tabell1":wb.SheetNames[0];
+  var ws=wb.Sheets[preferred];
+  var rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:"",raw:false});
+  if(!rows.length)throw new Error("Excel-filen är tom.");
+  var headers=rows[0].map(function(v){return String(v).trim().toLowerCase();});
+  var iStep=headers.indexOf("steg");
+  var iMoment=headers.indexOf("moment");
+  if(iMoment<0)iMoment=headers.indexOf("arbetssteg");
+  if(iMoment<0)iMoment=headers.indexOf("processsteg");
+  var out=[];
+  if(iMoment>=0){
+    rows.slice(1).forEach(function(r,idx){
+      var name=String(r[iMoment]||"").trim();
+      if(!name)return;
+      var n=iStep>=0?parseFloat(String(r[iStep]).replace(",",".")):idx+1;
+      out.push({order:isFinite(n)?n:idx+1,name:name,type:"VA"});
+    });
+  }else{
+    var col=0;
+    if(rows[0].length>1){
+      var count0=rows.slice(1).filter(function(r){return String(r[0]||"").trim();}).length;
+      var count1=rows.slice(1).filter(function(r){return String(r[1]||"").trim();}).length;
+      col=count1>count0?1:0;
+    }
+    rows.slice(1).forEach(function(r,idx){
+      var name=String(r[col]||"").trim();
+      if(name)out.push({order:idx+1,name:name,type:"VA"});
+    });
+  }
+  out.sort(function(a,b){return a.order-b.order;});
+  if(!out.length)throw new Error("Hittade inga moment. Förväntade kolumnerna Steg och Moment.");
+  state.steps=out.map(function(x){return {name:x.name,type:x.type};});
+  renderSteps();saveSetup();
+  $("sourceStatus").innerHTML='<b>'+escapeHtml(sourceName)+'</b> inläst · '+state.steps.length+" steg.";
+  toast(sourceName+" inläst");
+}
+async function loadPreset(){
+  var file=$("presetSelect").value;
+  if(!file)return toast("Välj en fil först.");
+  try{
+    var res=await fetch(file,{cache:"no-store"});
+    if(!res.ok)throw new Error("Filen kunde inte öppnas.");
+    parseWorkbook(await res.arrayBuffer(),String(file).replace(/\.xlsx?$/i,""));
+  }catch(e){toast("Fel: "+e.message);}
+}
+function openLocal(){ $("localFile").click(); }
+function localChanged(e){
+  var f=e.target.files&&e.target.files[0];if(!f)return;
+  var rd=new FileReader();
+  rd.onload=function(){try{parseWorkbook(rd.result,f.name.replace(/\.xlsx?$/i,""));}catch(err){toast("Fel: "+err.message);}};
+  rd.readAsArrayBuffer(f);
+  e.target.value="";
+}
+
+function newCycle(){
+  return {times:new Array(state.steps.length).fill(null),valid:true};
+}
+function completedCycles(){
+  return state.cycles.filter(function(c){return c.valid&&c.times.length===state.steps.length&&c.times.every(function(v){return typeof v==="number"&&v>0;});});
+}
+function startMeasurement(){
+  state.steps=editorSteps();
+  if(!state.steps.length)return toast("Lägg till minst ett steg.");
+  if(!$("processName").value.trim())return toast("Ange processnamn.");
+  if(!$("chkOperator").checked||!$("chkFlow").checked||!$("chkNormal").checked)return toast("Bekräfta de tre punkterna före mätningen.");
+  saveSetup();
+  state.process=$("processName").value.trim();
+  state.date=$("processDate").value||new Date().toISOString().slice(0,10);
+  state.cycles=[newCycle()];state.currentCycle=0;state.currentStep=0;state.running=false;state.paused=false;state.elapsed=0;
+  clearInterval(state.timerHandle);
+  $("liveProcess").textContent=state.process;
+  $("liveMeta").textContent=state.date+" · "+state.steps.length+" steg";
+  $("btnNext").textContent="Start";
+  setScreen("live");renderLive();
+}
+function startTimer(){
+  if(state.running)return;
+  state.running=true;state.paused=false;state.startedAt=performance.now();$("btnNext").textContent="Nästa steg";$("btnPause").textContent="Pausa";
+  tick();state.timerHandle=setInterval(tick,40);renderLiveSteps();
+}
+function tick(){
+  var ms=state.elapsed;
+  if(state.running&&!state.paused)ms+=performance.now()-state.startedAt;
+  $("timer").textContent=fmt(ms);
+}
+function currentElapsed(){
+  return state.elapsed+(state.running&&!state.paused?performance.now()-state.startedAt:0);
+}
+function captureStep(){
+  var ms=currentElapsed();
+  if(ms<50)return false;
+  state.cycles[state.currentCycle].times[state.currentStep]=ms;
+  state.elapsed=0;state.startedAt=performance.now();return true;
+}
+function nextStep(){
+  if(!state.running){startTimer();return;}
+  if(state.paused){resumeTimer();return;}
+  if(!captureStep())return;
+  if(state.currentStep>=state.steps.length-1){
+    state.currentCycle++;
+    state.currentStep=0;
+    state.cycles.push(newCycle());
+  }else state.currentStep++;
+  renderLive();
+}
+function pauseTimer(){
+  if(!state.running)return toast("Starta mätningen först.");
+  if(state.paused){resumeTimer();return;}
+  state.elapsed=currentElapsed();state.paused=true;clearInterval(state.timerHandle);$("btnPause").textContent="Fortsätt";tick();renderLiveSteps();
+}
+function resumeTimer(){
+  if(!state.running)return startTimer();
+  state.paused=false;state.startedAt=performance.now();$("btnPause").textContent="Pausa";clearInterval(state.timerHandle);state.timerHandle=setInterval(tick,40);renderLiveSteps();
+}
+function stopTimer(){
+  clearInterval(state.timerHandle);state.running=false;state.paused=false;state.elapsed=0;$("timer").textContent="00:00.00";$("btnNext").textContent="Start";$("btnPause").textContent="Pausa";renderLiveSteps();
+}
+function renderLive(){
+  $("liveCycle").textContent=state.currentCycle+1;
+  $("liveStepNo").textContent=(state.currentStep+1)+" / "+state.steps.length;
+  $("liveCompleted").textContent=completedCycles().length;
+  renderLiveSteps();renderHistory();
+}
+function renderLiveSteps(){
+  var cycle=state.cycles[state.currentCycle]||newCycle();
+  $("liveStepList").innerHTML=state.steps.map(function(s,i){
+    var cls="live-step";
+    if(i===state.currentStep)cls+=" active";
+    if(cycle.times[i])cls+=" done";
+    var shown=cycle.times[i]?fmt(cycle.times[i]):(i===state.currentStep&&state.running?$("timer").textContent:"–");
+    return '<div class="'+cls+'"><div class="step-no">'+(i+1)+'</div><div><div class="name">'+escapeHtml(s.name)+'</div><div class="type">'+s.type+'</div></div><div class="time">'+shown+'</div></div>';
+  }).join("");
+}
+function cycleTotal(c){return c.times.reduce(function(a,b){return a+(typeof b==="number"?b:0);},0);}
+function renderHistory(){
+  var box=$("historyList");
+  var rows=state.cycles.map(function(c,i){return {c:c,i:i,complete:c.times.every(function(v){return typeof v==="number"&&v>0;})};}).filter(function(x){return x.complete;});
+  if(!rows.length){box.innerHTML='<div class="help">Inga kompletta cykler ännu.</div>';return;}
+  box.innerHTML=rows.slice().reverse().map(function(x){
+    return '<div class="history-row'+(x.c.valid?"":" excluded")+'"><div class="history-name">Cykel '+(x.i+1)+'</div><div class="history-time">'+fmt(cycleTotal(x.c))+'</div><button class="btn secondary icon-btn hist-toggle" data-cycle="'+x.i+'" title="Inkludera / exkludera">×</button></div>';
+  }).join("");
+}
+function toggleCycle(i){if(!state.cycles[i])return;state.cycles[i].valid=!state.cycles[i].valid;renderLive();}
+
+function editDuringLive(){
+  if(!confirm("Tillbaka till stegredigering? Aktuell mätning raderas."))return;
+  stopTimer();state.cycles=[];setScreen("setup");renderSteps();
+}
+function finishMeasurement(){
+  if(state.running&&currentElapsed()>50)captureStep();
+  stopTimer();
+  setScreen("result");renderResults();
+}
+function stats(){
+  var cycles=completedCycles();
+  var totals=cycles.map(cycleTotal);
+  var avgCycle=totals.length?totals.reduce(function(a,b){return a+b;},0)/totals.length:0;
+  var stepAvgs=state.steps.map(function(s,i){
+    var vals=cycles.map(function(c){return c.times[i];}).filter(function(v){return typeof v==="number";});
+    return {name:s.name,type:s.type,avg:vals.length?vals.reduce(function(a,b){return a+b;},0)/vals.length:0};
+  });
+  var bottle=stepAvgs.slice().sort(function(a,b){return b.avg-a.avg;})[0]||null;
+  var totalSteps=stepAvgs.reduce(function(a,b){return a+b.avg;},0)||1;
+  var sums={VA:0,NNVA:0,NVA:0};
+  stepAvgs.forEach(function(x){sums[x.type]=(sums[x.type]||0)+x.avg;});
+  return {
+    cycles:cycles,totals:totals,avgCycle:avgCycle,stepAvgs:stepAvgs,bottle:bottle,
+    shares:{VA:Math.round(sums.VA/totalSteps*100),NNVA:Math.round(sums.NNVA/totalSteps*100),NVA:Math.round(sums.NVA/totalSteps*100)}
+  };
+}
+function renderResults(){
+  var s=stats();
+  $("resultTitle").textContent=state.process;
+  $("resultMeta").textContent=state.date+" · "+state.steps.length+" steg · "+s.cycles.length+" kompletta cykler";
+  $("resCycles").textContent=s.cycles.length;
+  $("resAvg").textContent=s.avgCycle?fmt(s.avgCycle):"–";
+  $("resBottle").textContent=s.bottle&&s.bottle.avg?s.bottle.name:"–";
+  $("resVA").textContent=s.shares.VA+"%";
+  $("classVA").textContent=s.shares.VA+"%";$("classNNVA").textContent=s.shares.NNVA+"%";$("classNVA").textContent=s.shares.NVA+"%";
+  var max=Math.max.apply(null,s.stepAvgs.map(function(x){return x.avg;}).concat([1]));
+  $("resultBars").innerHTML=s.stepAvgs.map(function(x){
+    var w=Math.max(1,x.avg/max*100);
+    return '<div class="bar-row"><div class="bar-name">'+escapeHtml(x.name)+' · '+x.type+'</div><div class="bar-track"><div class="bar-fill" style="width:'+w+'%"></div></div><div class="bar-value">'+(x.avg?fmtSec(x.avg):"–")+'</div></div>';
+  }).join("");
+  var ok=s.cycles.length>0;
+  $("btnExcel").disabled=!ok;$("btnPdf").disabled=!ok;$("btnExcelTop").disabled=!ok;$("btnPdfTop").disabled=!ok;
+}
+function backToLive(){setScreen("live");renderLive();}
+function newObservation(){
+  stopTimer();state.cycles=[];state.currentCycle=0;state.currentStep=0;
+  $("btnExcelTop").disabled=true;$("btnPdfTop").disabled=true;
+  setScreen("setup");
+}
+
+async function exportStepTemplate(){
+  state.steps=editorSteps();
+  if(!state.steps.length)return toast("Det finns inga steg att exportera.");
+  var wb=new ExcelJS.Workbook();
+  var ws=wb.addWorksheet("Steg");
+  ws.addTable({
+    name:"Tabell1",ref:"A1",headerRow:true,style:{theme:"TableStyleMedium2",showRowStripes:true},
+    columns:[{name:"Steg"},{name:"Moment"}],
+    rows:state.steps.map(function(s,i){return [i+1,s.name];})
+  });
+  ws.getColumn(1).width=10;ws.getColumn(2).width=42;
+  var buf=await wb.xlsx.writeBuffer();
+  downloadBlob(buf,(state.process||"Steglista")+".xlsx","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+}
+function downloadBlob(buffer,name,type){
+  var blob=buffer instanceof Blob?buffer:new Blob([buffer],{type:type});
+  var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href);},1000);
+}
+async function exportExcel(){
+  var s=stats();if(!s.cycles.length)return toast("Inga kompletta cykler att rapportera.");
+  var wb=new ExcelJS.Workbook();wb.creator="Step Timer";wb.created=new Date();
+  var ws=wb.addWorksheet("Rapport",{views:[{showGridLines:false}]});
+  ws.mergeCells("A1:E2");var title=ws.getCell("A1");title.value="STEP TIMER · PROCESSOBSERVATION";title.font={bold:true,size:20,color:{argb:"FFFFFFFF"}};title.fill={type:"pattern",pattern:"solid",fgColor:{argb:"FF0F172A"}};title.alignment={vertical:"middle",horizontal:"left"};
+  ws.getRow(3).values=["Process",state.process,"Datum",state.date,"Cykler",s.cycles.length];ws.getRow(3).font={bold:true};
+  ws.getRow(5).values=["KPI","Värde"];ws.getRow(5).font={bold:true,color:{argb:"FFFFFFFF"}};ws.getRow(5).fill={type:"pattern",pattern:"solid",fgColor:{argb:"FF2563EB"}};
+  [["Medel cykeltid",fmt(s.avgCycle)],["Flaskhals",s.bottle?s.bottle.name:"–"],["VA-andel",s.shares.VA+"%"],["NNVA-andel",s.shares.NNVA+"%"],["NVA-andel",s.shares.NVA+"%"]].forEach(function(r){ws.addRow(r);});
+  ws.addRow([]);var hr=ws.addRow(["Steg","Moment","Typ","Medeltid","Sekunder"]);hr.font={bold:true,color:{argb:"FFFFFFFF"}};hr.fill={type:"pattern",pattern:"solid",fgColor:{argb:"FF0F172A"}};
+  s.stepAvgs.forEach(function(x,i){ws.addRow([i+1,x.name,x.type,fmt(x.avg),x.avg/1000]);});
+  ws.columns=[{width:10},{width:40},{width:12},{width:16},{width:14}];
+  var cyc=wb.addWorksheet("Cykler",{views:[{showGridLines:false}]});
+  var head=["Cykel"].concat(state.steps.map(function(x){return x.name;})).concat(["Totalt","Inkluderad"]);
+  var rh=cyc.addRow(head);rh.font={bold:true,color:{argb:"FFFFFFFF"}};rh.fill={type:"pattern",pattern:"solid",fgColor:{argb:"FF0F172A"}};
+  state.cycles.forEach(function(c,i){
+    if(!c.times.every(function(v){return typeof v==="number"&&v>0;}))return;
+    cyc.addRow([i+1].concat(c.times.map(function(v){return v/1000;})).concat([cycleTotal(c)/1000,c.valid?"Ja":"Nej"]));
+  });
+  cyc.columns=head.map(function(h,i){return {width:i===0?10:Math.min(28,Math.max(12,String(h).length+2))};});
+  var buf=await wb.xlsx.writeBuffer();
+  downloadBlob(buf,safeName(state.process+"_StepTimer_"+state.date)+".xlsx","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+}
+function exportPdf(){
+  var s=stats();if(!s.cycles.length)return toast("Inga kompletta cykler att rapportera.");
+  var jsPDF=window.jspdf.jsPDF;var doc=new jsPDF({orientation:"landscape",unit:"mm",format:"a4"});
+  var W=297,H=210,margin=12;
+  function header(page){
+    doc.setFillColor(15,23,42);doc.rect(0,0,W,24,"F");
+    doc.setTextColor(255,255,255);doc.setFont("helvetica","bold");doc.setFontSize(16);doc.text("STEP TIMER · PROCESSOBSERVATION",margin,10);
+    doc.setFont("helvetica","normal");doc.setFontSize(9);doc.text(state.process+" · "+state.date,margin,17);
+    doc.setFillColor(37,99,235);doc.rect(0,24,W,2,"F");
+    doc.setTextColor(15,23,42);doc.setFontSize(8);doc.text("Sida "+page,W-margin,10,{align:"right"});
+  }
+  function card(x,y,w,label,value){
+    doc.setDrawColor(226,232,240);doc.setFillColor(248,250,252);doc.roundedRect(x,y,w,20,2,2,"FD");
+    doc.setTextColor(100,116,139);doc.setFont("helvetica","bold");doc.setFontSize(7);doc.text(label.toUpperCase(),x+4,y+6);
+    doc.setTextColor(15,23,42);doc.setFontSize(12);doc.text(String(value),x+4,y+14);
+  }
+  header(1);
+  var gap=4,cw=(W-2*margin-3*gap)/4;
+  card(margin,32,cw,"Cykler",s.cycles.length);card(margin+cw+gap,32,cw,"Medel cykeltid",fmt(s.avgCycle));card(margin+(cw+gap)*2,32,cw,"Flaskhals",s.bottle?s.bottle.name:"–");card(margin+(cw+gap)*3,32,cw,"VA-andel",s.shares.VA+"%");
+  doc.setFont("helvetica","bold");doc.setFontSize(11);doc.setTextColor(15,23,42);doc.text("Medeltid per steg",margin,62);
+  var max=Math.max.apply(null,s.stepAvgs.map(function(x){return x.avg;}).concat([1]));
+  var y=69,page=1;
+  s.stepAvgs.forEach(function(x,i){
+    if(y>188){doc.addPage();page++;header(page);y=36;}
+    doc.setFont("helvetica","bold");doc.setFontSize(8);doc.setTextColor(15,23,42);doc.text((i+1)+". "+x.name,margin,y);
+    doc.setFont("helvetica","normal");doc.setTextColor(100,116,139);doc.text(x.type,92,y);
+    doc.setFillColor(226,232,240);doc.roundedRect(104,y-4,140,4,2,2,"F");
+    doc.setFillColor(37,99,235);doc.roundedRect(104,y-4,Math.max(1,140*x.avg/max),4,2,2,"F");
+    doc.setTextColor(15,23,42);doc.setFont("helvetica","bold");doc.text(fmtSec(x.avg),W-margin,y,{align:"right"});
+    y+=8;
+  });
+  if(page===1&&y<174){
+    y+=4;doc.setDrawColor(226,232,240);doc.line(margin,y,W-margin,y);y+=8;
+    doc.setFont("helvetica","bold");doc.setFontSize(10);doc.text("Lean-fördelning",margin,y);y+=8;
+    doc.setFontSize(11);doc.setTextColor(22,163,74);doc.text("VA  "+s.shares.VA+"%",margin,y);
+    doc.setTextColor(245,158,11);doc.text("NNVA  "+s.shares.NNVA+"%",margin+45,y);
+    doc.setTextColor(220,38,38);doc.text("NVA  "+s.shares.NVA+"%",margin+100,y);
+  }
+  doc.setTextColor(100,116,139);doc.setFont("helvetica","normal");doc.setFontSize(7);doc.text("Genererad av Step Timer",margin,H-6);
+  doc.save(safeName(state.process+"_StepTimer_"+state.date)+".pdf");
+}
+function bind(){
+  $("btnTheme").onclick=toggleTheme;
+  $("btnLoadPreset").onclick=loadPreset;$("btnLocalFile").onclick=openLocal;$("localFile").onchange=localChanged;
+  $("btnStepTemplate").onclick=exportStepTemplate;$("btnAddStep").onclick=addStep;$("btnClearSteps").onclick=clearSteps;
+  $("btnSaveSetup").onclick=function(){state.steps=editorSteps();saveSetup();toast("Sparat lokalt.");};
+  $("btnStart").onclick=startMeasurement;$("btnNext").onclick=nextStep;$("btnPause").onclick=pauseTimer;$("btnStop").onclick=stopTimer;
+  $("btnFinish").onclick=finishMeasurement;$("btnEditStepsLive").onclick=editDuringLive;
+  $("btnBackLive").onclick=backToLive;$("btnNew").onclick=newObservation;
+  $("btnExcel").onclick=exportExcel;$("btnPdf").onclick=exportPdf;$("btnExcelTop").onclick=exportExcel;$("btnPdfTop").onclick=exportPdf;
+  $("stepList").addEventListener("input",function(e){if(e.target.classList.contains("step-name")){var i=+e.target.closest(".step-row").dataset.index;state.steps[i].name=e.target.value;saveSetup();}});
+  $("stepList").addEventListener("change",function(e){if(e.target.classList.contains("step-type")){var row=e.target.closest(".step-row"),i=+row.dataset.index;state.steps[i].type=e.target.value;row.className=rowClass(e.target.value);saveSetup();}});
+  $("stepList").addEventListener("click",function(e){
+    var row=e.target.closest(".step-row");if(!row)return;var i=+row.dataset.index;
+    if(e.target.closest(".step-up"))moveStep(i,-1);
+    if(e.target.closest(".step-down"))moveStep(i,1);
+    if(e.target.closest(".step-delete"))deleteStep(i);
+  });
+  $("historyList").addEventListener("click",function(e){var b=e.target.closest(".hist-toggle");if(b)toggleCycle(+b.dataset.cycle);});
+  ["processName","processDate","chkOperator","chkFlow","chkNormal"].forEach(function(id){$(id).addEventListener("change",saveSetup);});
+  document.addEventListener("keydown",function(e){
+    if(e.code==="Space"&&!$("liveScreen").classList.contains("hidden")&&!/INPUT|TEXTAREA|SELECT|BUTTON/.test((document.activeElement||{}).tagName||"")){e.preventDefault();nextStep();}
+  });
+}
+function init(){
+  applyTheme(localStorage.getItem(THEME)||"dark");
+  $("processDate").value=new Date().toISOString().slice(0,10);
+  if(!restoreSetup())state.steps=defaultSteps();
+  renderSteps();loadPresetList();bind();
+}
+document.addEventListener("DOMContentLoaded",init);
 })();
 </script>
 </body>
