@@ -65,6 +65,62 @@ h1,h2,h3{margin:0;color:var(--ink)}h1{font-size:24px;margin-top:4px}h2{font-size
   .app{padding:6px;padding-bottom:8px}.menubar{top:4px;display:grid;grid-template-columns:minmax(110px,1fr) auto;align-items:start}.brand-sub{display:none}.brand-title{font-size:14px}.brand-mark{width:31px;height:31px}.menu-actions{display:grid;grid-template-columns:repeat(3,minmax(42px,max-content));gap:4px}.menu-actions .btn{min-height:32px;padding:4px 6px;font-size:10px}.setup-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.source-actions{grid-template-columns:1fr}.steps-card{padding:10px}.card-head{align-items:flex-start;flex-direction:column}.card-head-actions{width:100%;display:grid;grid-template-columns:repeat(3,1fr)}.step-row{grid-template-columns:32px 1fr 76px 34px 34px 34px;gap:4px;padding:6px}.step-row input,.step-row select{font-size:13px;padding:6px}.step-no{width:27px;height:27px}.setup-footer{align-items:stretch;flex-direction:column}.setup-footer .btn{width:100%}.live-top{top:54px}.live-head{flex-direction:column}.live-actions{width:100%;display:grid;grid-template-columns:repeat(3,1fr)}.live-kpis{grid-template-columns:1fr 1fr}.live-kpis .timer{grid-column:span 2}.live-side{grid-template-columns:1fr}.live-chart-card{min-height:390px;padding:10px}.cycle-chart-wrap{height:280px}.chart-kpis{grid-template-columns:1fr 1fr}.chart-kpis .chart-kpi:first-child{grid-column:span 2}.chart-legend{max-height:48px;overflow:auto}.live-step-list{max-height:none}.next-bar{position:sticky;bottom:6px;z-index:22;padding:6px;background:var(--bg);border-radius:10px}.summary-kpis{grid-template-columns:1fr 1fr}.bar-row{grid-template-columns:1fr 68px}.bar-track{grid-column:1 / -1;grid-row:2}.result-actions{display:grid;grid-template-columns:1fr 1fr}.result-actions .btn:last-child{grid-column:span 2}
 }
 @media(max-width:430px){.menu-actions{grid-template-columns:repeat(3,42px)}.step-row{grid-template-columns:28px 1fr 68px 32px 32px 32px}.step-row .btn{min-height:34px}.live-actions{grid-template-columns:1fr 1fr}.live-actions .btn:last-child{grid-column:span 2}}
+
+/* Compact measurement surface; analytics belong to the result screen. */
+body.measuring{overflow:hidden}
+body.measuring .app{height:100dvh;min-height:0;padding:8px;display:flex;flex-direction:column;gap:6px}
+body.measuring .menubar{display:none}
+#liveScreen{flex:1;min-height:0;display:flex;flex-direction:column;gap:6px}
+.live-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:38px}
+.live-title{flex:1;min-width:0}.live-title h2{font-size:16px}
+#liveScreen .live-actions{display:flex;width:auto;flex-wrap:nowrap;gap:5px}
+#liveScreen .live-actions .btn{font-size:14px;min-height:36px;padding:6px 10px}
+.live-clock{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 8px 4px;font-size:14px}
+.live-clock strong{font-size:30px;line-height:1.1;color:var(--accent)}
+.live-matrix-card{flex:1;min-height:0;overflow:hidden;border-radius:10px;box-shadow:none}
+.matrix{height:100%;display:grid;grid-template-rows:34px repeat(var(--rows),minmax(0,1fr)) 36px}
+.matrix-row{display:grid;grid-template-columns:minmax(0,1fr) repeat(var(--cols),minmax(78px,.38fr));align-items:stretch;border-bottom:1px solid var(--line);min-height:0}
+.matrix-row>div{padding:6px 10px;display:flex;align-items:center;min-width:0;border-right:1px solid var(--line)}
+.matrix-row>div:last-child{border-right:0}
+.matrix-header{font-size:14px;font-weight:750;background:var(--paper-2);color:var(--muted)}
+.matrix-label{gap:8px;font-size:16px;font-weight:650;line-height:1.15;overflow:hidden}
+.matrix-label .number{color:var(--muted);flex-shrink:0;font-variant-numeric:tabular-nums}
+.matrix-label .step-name-text{overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.matrix-time{justify-content:flex-end;font-size:20px;font-weight:750;white-space:nowrap;font-variant-numeric:tabular-nums}
+.matrix-row.active{background:color-mix(in srgb,var(--accent) 16%,var(--paper));box-shadow:inset 5px 0 var(--accent)}
+.matrix-row.active .matrix-label,.matrix-row.active .current-time{color:var(--accent);font-weight:850}
+.matrix-row.done .current-time{color:var(--success)}
+.matrix-row .current-column{background:color-mix(in srgb,var(--accent) 6%,transparent)}
+.matrix-total{font-size:14px;font-weight:850;background:var(--paper-2);border-bottom:0}
+.matrix-total .matrix-time{font-size:18px}
+.step-pager{display:flex;align-items:center;justify-content:space-between;font-size:14px;gap:6px;height:34px;flex-shrink:0}
+.step-pager .btn{min-height:30px;font-size:14px;padding:4px 8px}
+.cycle-note{display:flex;align-items:center;gap:6px;min-height:40px;flex-shrink:0}
+.cycle-note label{font-size:14px;white-space:nowrap}
+.cycle-note input{min-width:0;flex:1;width:100%;height:38px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);padding:6px 10px;font-size:16px}
+#liveScreen>#btnNext{width:100%;min-height:52px;flex-shrink:0;font-size:18px}
+#commentDialog{width:min(94vw,520px);background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:18px}
+#commentDialog::backdrop{background:#0009}
+#commentText{width:100%;margin-top:12px;padding:10px;font-size:16px;background:var(--paper-2);color:var(--ink);border:1px solid var(--line);border-radius:8px;resize:vertical}
+.comment-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
+.result-matrix-card{margin-top:8px}.result-matrix{overflow:auto;margin-top:12px}
+.result-matrix table{border-collapse:collapse;min-width:100%;font-size:14px}
+.result-matrix th,.result-matrix td{padding:9px;border:1px solid var(--line);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.result-matrix th:first-child{text-align:left;white-space:normal;min-width:160px}
+.result-matrix thead,.result-matrix tfoot{background:var(--paper-2)}
+.result-matrix .excluded{opacity:.5}.result-matrix td.note-cell{white-space:pre-wrap;min-width:130px;max-width:250px;text-align:left;font-variant-numeric:normal}
+#resultScreen .live-chart-card{margin-top:8px}#resultScreen .history-list{max-height:none}
+.history-note{font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--muted);margin-top:4px}
+.history-row{grid-template-columns:minmax(0,1fr) auto auto auto}
+@media(max-width:600px){
+ body.measuring .app{padding:6px;gap:4px}#liveScreen{gap:4px}
+ .live-clock strong{font-size:26px}.matrix-label{font-size:14px;gap:5px}
+ .matrix-row{grid-template-columns:minmax(0,1fr) repeat(var(--cols),82px)}
+ .matrix-row>div{padding:5px 6px}.matrix-time{font-size:16px}.matrix-total .matrix-time{font-size:16px}
+ .matrix-header{font-size:14px}.cycle-note label{display:none}
+}
+@media(max-height:500px){.live-toolbar{min-height:32px}.live-clock strong{font-size:22px}.live-clock{padding-bottom:0}#liveScreen>#btnNext{min-height:40px}.cycle-note{min-height:34px}.cycle-note input{height:32px}.matrix{grid-template-rows:28px repeat(var(--rows),minmax(0,1fr)) 30px}}
+
 </style>
 </head>
 <body>
@@ -125,52 +181,15 @@ h1,h2,h3{margin:0;color:var(--ink)}h1{font-size:24px;margin-top:4px}h2{font-size
   </section>
 
   <section id="liveScreen" class="hidden">
-    <div class="card live-top">
-      <div class="live-head">
-        <div class="live-title"><div class="eyebrow">Pågående observation</div><h2 id="liveProcess">–</h2><div id="liveMeta" class="muted compact"></div></div>
-        <div class="live-actions">
-          <button id="btnPause" class="btn secondary">Pausa</button>
-          <button id="btnStop" class="btn secondary">Stoppa</button>
-          <button id="btnFinish" class="btn primary">Avsluta</button>
-        </div>
-      </div>
-      <div class="live-kpis">
-        <div class="kpi timer"><span>AKTUELL STEGTID</span><strong id="timer" class="timer-value">00:00.00</strong></div>
-        <div class="kpi"><span>CYKEL</span><strong id="liveCycle">1</strong></div>
-        <div class="kpi"><span>STEG</span><strong id="liveStepNo">1 / 1</strong></div>
-        <div class="kpi"><span>KLARA CYKLER</span><strong id="liveCompleted">0</strong></div>
-      </div>
+    <div class="live-toolbar">
+      <div class="live-title"><h2 id="liveProcess">–</h2><span id="liveMeta" class="hidden"></span></div>
+      <div class="live-actions"><button id="btnPause" class="btn small">Pausa</button><button id="btnFinish" class="btn small">Avsluta</button></div>
     </div>
-
-    <div class="live-layout">
-      <div class="live-main">
-        <div class="card live-chart-card">
-          <div class="chart-head">
-            <div><div class="eyebrow">Cykeltid</div><h3>Staplar per cykel</h3><div class="help">Varje stapel är en hel cykel. Färgsegmenten visar hur stor del varje moment tar.</div></div>
-          </div>
-          <div class="chart-kpis">
-            <div class="chart-kpi"><span>AKTUELL CYKEL</span><strong id="chartCurrent">–</strong></div>
-            <div class="chart-kpi"><span>MEDEL CYKELTID</span><strong id="chartAvg">–</strong></div>
-            <div class="chart-kpi"><span>BÄSTA CYKEL</span><strong id="chartBest">–</strong></div>
-          </div>
-          <div class="cycle-chart-wrap"><canvas id="cycleChart"></canvas></div>
-          <div id="chartLegend" class="chart-legend"></div>
-        </div>
-      </div>
-      <aside class="live-side">
-        <div class="card live-step-card">
-          <div class="card-head"><div><div class="eyebrow">Momentanalys</div><h3>Aktuell cykel</h3></div><span class="muted compact">Tid per moment</span></div>
-          <div id="liveStepList" class="live-step-list"></div>
-          <div class="next-bar">
-            <button id="btnNext" class="btn primary big">Start</button>
-            <button id="btnEditStepsLive" class="btn secondary">Redigera steg</button>
-          </div>
-          <div class="help">Mellanslag = start / nästa moment. Sista momentet avslutar cykeln och startar nästa.</div>
-        </div>
-        <div class="card side-card"><div class="card-head"><h3>Cykelhistorik</h3><span class="muted compact">× = exkludera</span></div><div id="historyList" class="history-list"></div></div>
-        <div class="card side-card"><h3>Lean-klassificering</h3><div class="help">VA = värdeskapande · NNVA = nödvändigt men ej värdeskapande · NVA = slöseri.</div></div>
-      </aside>
-    </div>
+    <div class="live-clock"><span>Cykel <b id="liveCycle">1</b> · Steg <b id="liveStepNo">1 / 1</b></span><strong id="timer" class="timer-value">00:00.00</strong></div>
+    <div class="card live-matrix-card"><div id="liveMatrix" class="matrix"></div></div>
+    <div class="step-pager"><button id="btnPrevPage" class="btn small" aria-label="Föregående stegsida">Föregående</button><span id="stepPage" class="muted"></span><button id="btnNextPage" class="btn small" aria-label="Nästa stegsida">Nästa</button></div>
+    <div class="cycle-note"><label for="cycleComment">Cykelkommentar</label><input id="cycleComment" placeholder="Skriv kommentar till hela cykeln…" autocomplete="off"><button id="btnCycleNote" class="btn small">Öppna</button></div>
+    <button id="btnNext" class="btn primary big">Start</button>
   </section>
 
   <section id="resultScreen" class="hidden">
@@ -189,6 +208,21 @@ h1,h2,h3{margin:0;color:var(--ink)}h1{font-size:24px;margin-top:4px}h2{font-size
       <div class="card chart-card"><div class="card-head"><h2>Medeltid per steg</h2><span class="muted compact">Endast kompletta, inkluderade cykler</span></div><div id="resultBars" class="bars"></div></div>
       <div class="card class-card"><h2>Lean-fördelning</h2><div class="class-grid"><div class="class-box va"><span>VA</span><strong id="classVA">0%</strong></div><div class="class-box nnva"><span>NNVA</span><strong id="classNNVA">0%</strong></div><div class="class-box nva"><span>NVA</span><strong id="classNVA">0%</strong></div></div></div>
     </div>
+    <div class="card pad result-matrix-card"><h2>Stegtider per cykel</h2><div id="resultMatrix" class="result-matrix"></div></div>
+        <div class="card live-chart-card">
+          <div class="chart-head">
+            <div><div class="eyebrow">Cykeltid</div><h3>Staplar per cykel</h3><div class="help">Varje stapel är en hel cykel. Färgsegmenten visar hur stor del varje moment tar.</div></div>
+          </div>
+          <div class="chart-kpis">
+            <div class="chart-kpi"><span>AKTUELL CYKEL</span><strong id="chartCurrent">–</strong></div>
+            <div class="chart-kpi"><span>MEDEL CYKELTID</span><strong id="chartAvg">–</strong></div>
+            <div class="chart-kpi"><span>BÄSTA CYKEL</span><strong id="chartBest">–</strong></div>
+          </div>
+          <div class="cycle-chart-wrap"><canvas id="cycleChart"></canvas></div>
+          <div id="chartLegend" class="chart-legend"></div>
+        </div>
+
+    <div class="card side-card"><div class="card-head"><h3>Cykelhistorik och kommentarer</h3><span class="muted compact">× = exkludera</span></div><div id="historyList" class="history-list"></div></div>
     <div class="result-actions">
       <button id="btnBackLive" class="btn secondary">Tillbaka till mätning</button>
       <button id="btnExcel" class="btn secondary">Excelrapport</button>
@@ -197,6 +231,7 @@ h1,h2,h3{margin:0;color:var(--ink)}h1{font-size:24px;margin-top:4px}h2{font-size
     </div>
   </section>
 </div>
+<dialog id="commentDialog"><form method="dialog"><h2 id="commentTitle">Cykelkommentar</h2><textarea id="commentText" rows="6" aria-label="Kommentar till hela cykeln"></textarea><div class="comment-actions"><button class="btn" value="cancel">Avbryt</button><button id="btnSaveComment" class="btn primary" value="save">Spara</button></div></form></dialog>
 <div id="toast" class="toast hidden" role="status"></div>
 
 <script>
@@ -227,6 +262,8 @@ function fmt(ms){
 function fmtSec(ms){return (ms/1000).toFixed(2)+" s";}
 function safeName(s){return String(s||"rapport").replace(/[\\/:*?"<>|]+/g,"_").replace(/\s+/g,"_").slice(0,70);}
 function setScreen(name){
+  document.body.classList.toggle("measuring",name==="live");
+  window.scrollTo(0,0);
   $("setupScreen").classList.toggle("hidden",name!=="setup");
   $("liveScreen").classList.toggle("hidden",name!=="live");
   $("resultScreen").classList.toggle("hidden",name!=="result");
@@ -387,6 +424,7 @@ function parseWorkbook(buffer,sourceName){
   out.sort(function(a,b){return a.order-b.order;});
   if(!out.length)throw new Error("Hittade inga moment. Förväntade kolumnerna Steg och Moment.");
   state.steps=out.map(function(x){return {name:x.name,type:x.type};});
+  if(!$("processName").value.trim())$("processName").value=sourceName;
   renderSteps();saveSetup();
   $("sourceStatus").innerHTML='<b>'+escapeHtml(sourceName)+'</b> inläst · '+state.steps.length+" steg.";
   toast(sourceName+" inläst");
@@ -410,7 +448,7 @@ function localChanged(e){
 }
 
 function newCycle(){
-  return {times:new Array(state.steps.length).fill(null),valid:true};
+  return {times:new Array(state.steps.length).fill(null),valid:true,comment:""};
 }
 function completedCycles(){
   return state.cycles.filter(function(c){return c.valid&&c.times.length===state.steps.length&&c.times.every(function(v){return typeof v==="number"&&v>0;});});
@@ -427,19 +465,19 @@ function startMeasurement(){
   clearInterval(state.timerHandle);
   $("liveProcess").textContent=state.process;
   $("liveMeta").textContent=state.date+" · "+state.steps.length+" steg";
-  $("btnNext").textContent="Start";
+  $("btnNext").textContent="Start";$("btnPause").textContent="Pausa";
   setScreen("live");renderLive();
 }
 function startTimer(){
   if(state.running)return;
-  state.running=true;state.paused=false;state.startedAt=performance.now();$("btnNext").textContent="Nästa steg";$("btnPause").textContent="Pausa";
+  state.running=true;state.paused=false;state.startedAt=performance.now();$("btnNext").textContent=state.currentStep===state.steps.length-1?"Nästa cykel":"Nästa steg";$("btnPause").textContent="Pausa";
   tick();state.timerHandle=setInterval(tick,40);renderLiveSteps();
 }
 function tick(){
   var ms=state.elapsed;
   if(state.running&&!state.paused)ms+=performance.now()-state.startedAt;
   $("timer").textContent=fmt(ms);
-  drawCycleChart();
+  updateLiveTimes();
 }
 function currentElapsed(){
   return state.elapsed+(state.running&&!state.paused?performance.now()-state.startedAt:0);
@@ -471,13 +509,13 @@ function resumeTimer(){
   state.paused=false;state.startedAt=performance.now();$("btnPause").textContent="Pausa";clearInterval(state.timerHandle);state.timerHandle=setInterval(tick,40);renderLiveSteps();
 }
 function stopTimer(){
-  clearInterval(state.timerHandle);state.running=false;state.paused=false;state.elapsed=0;$("timer").textContent="00:00.00";$("btnNext").textContent="Start";$("btnPause").textContent="Pausa";renderLiveSteps();drawCycleChart();
+  clearInterval(state.timerHandle);state.running=false;state.paused=false;state.elapsed=0;$("timer").textContent="00:00.00";$("btnNext").textContent="Start";$("btnPause").textContent="Pausa";renderLiveSteps();updateLiveTimes();
 }
 function renderLive(){
   $("liveCycle").textContent=state.currentCycle+1;
   $("liveStepNo").textContent=(state.currentStep+1)+" / "+state.steps.length;
-  $("liveCompleted").textContent=completedCycles().length;
-  renderLiveSteps();renderHistory();drawCycleChart();
+
+  renderLiveSteps();
 }
 
 var STEP_COLORS=["#2563eb","#0ea5e9","#14b8a6","#22c55e","#84cc16","#eab308","#f59e0b","#f97316","#ef4444","#8b5cf6","#ec4899","#06b6d4"];
@@ -485,7 +523,7 @@ function chartMomentColor(i){return STEP_COLORS[i%STEP_COLORS.length];}
 function completeCycle(c){return !!c&&c.times.length===state.steps.length&&c.times.every(function(v){return typeof v==="number"&&v>0;});}
 function drawCycleChart(){
   var canvas=$("cycleChart");
-  if(!canvas||$("liveScreen").classList.contains("hidden"))return;
+  if(!canvas||$("resultScreen").classList.contains("hidden"))return;
   var rect=canvas.getBoundingClientRect();
   var cssW=Math.max(1,Math.round(rect.width)),cssH=Math.max(1,Math.round(rect.height));
   var dpr=window.devicePixelRatio||1;
@@ -561,15 +599,50 @@ function drawCycleChart(){
     guide(Math.min.apply(null,validTotals),"#16a34a","Bäst "+fmt(Math.min.apply(null,validTotals)),[2,3]);
   }
 }
-function renderLiveSteps(){
+var stepPage=0,rowsPerPage=6,commentCycle=0;
+function visibleCycles(){
+  var count=window.innerWidth<=600?1:2;
+  var out=[];for(var i=Math.max(0,state.currentCycle-count);i<=state.currentCycle;i++)out.push(i);
+  return out;
+}
+function renderLiveSteps(manual){
   var cycle=state.cycles[state.currentCycle]||newCycle();
-  $("liveStepList").innerHTML=state.steps.map(function(s,i){
-    var cls="live-step";
-    if(i===state.currentStep)cls+=" active";
-    if(cycle.times[i])cls+=" done";
-    var shown=cycle.times[i]?fmt(cycle.times[i]):(i===state.currentStep&&state.running?$("timer").textContent:"–");
-    return '<div class="'+cls+'"><div class="step-no">'+(i+1)+'</div><div><div class="name">'+escapeHtml(s.name)+'</div><div class="type">'+s.type+'</div></div><div class="time">'+shown+'</div></div>';
-  }).join("");
+  var h=$("liveMatrix").parentElement.clientHeight;
+  rowsPerPage=Math.max(1,Math.min(state.steps.length,Math.floor((h-70)/44)));
+  if(!manual)stepPage=Math.floor(state.currentStep/rowsPerPage);
+  var pages=Math.ceil(state.steps.length/rowsPerPage);stepPage=Math.max(0,Math.min(stepPage,pages-1));
+  var start=stepPage*rowsPerPage,end=Math.min(start+rowsPerPage,state.steps.length),cols=visibleCycles();
+  var box=$("liveMatrix");box.style.setProperty("--rows",end-start);box.style.setProperty("--cols",cols.length);
+  var html='<div class="matrix-row matrix-header"><div>Steg</div>'+cols.map(function(ci){return '<div class="matrix-time'+(ci===state.currentCycle?' current-column':'')+'" style="font-size:14px">Cykel '+(ci+1)+'</div>';}).join('')+'</div>';
+  for(var i=start;i<end;i++){
+    html+='<div class="matrix-row'+(i===state.currentStep?' active':cycle.times[i]!=null?' done':'')+'"'+(i===state.currentStep?' aria-current="step"':'')+'><div class="matrix-label" title="'+escapeHtml(state.steps[i].name)+'"><span class="number">'+(i+1)+'</span><span class="step-name-text">'+escapeHtml(state.steps[i].name)+'</span></div>'+cols.map(function(ci){var c=state.cycles[ci];return '<div class="matrix-time'+(ci===state.currentCycle?' current-column current-time':'')+'"'+(ci===state.currentCycle&&i===state.currentStep?' id="activeStepTime"':'')+'>'+(c.times[i]!=null?fmt(c.times[i]):'–')+'</div>';}).join('')+'</div>';
+  }
+  html+='<div class="matrix-row matrix-total"><div>Total cykeltid</div>'+cols.map(function(ci){return '<div class="matrix-time'+(ci===state.currentCycle?' current-column':'')+'"'+(ci===state.currentCycle?' id="activeCycleTotal"':'')+'>'+fmt(cycleTotal(state.cycles[ci]))+'</div>';}).join('')+'</div>';
+  box.innerHTML=html;
+  $("stepPage").textContent=pages>1?'Steg '+(start+1)+'–'+end+' / '+state.steps.length:state.steps.length+' steg';
+  $("btnPrevPage").disabled=stepPage===0;$("btnNextPage").disabled=stepPage===pages-1;
+  $("btnPrevPage").style.visibility=$("btnNextPage").style.visibility=pages>1?'visible':'hidden';
+  $("cycleComment").value=cycle.comment||'';
+  $("btnNext").textContent=!state.running?'Start':state.paused?'Fortsätt':state.currentStep===state.steps.length-1?'Nästa cykel':'Nästa steg';
+  updateLiveTimes();
+}
+function updateLiveTimes(){
+  var c=state.cycles[state.currentCycle];if(!c)return;
+  var ms=currentElapsed(),active=$("activeStepTime");
+  if(active)active.textContent=state.running||state.paused?fmt(ms):c.times[state.currentStep]!=null?fmt(c.times[state.currentStep]):'–';
+  var total=$("activeCycleTotal");if(total)total.textContent=fmt(cycleTotal(c)+(state.running?ms:0));
+}
+function openCycleComment(index){
+  commentCycle=index;$("commentTitle").textContent='Kommentar · cykel '+(index+1);
+  $("commentText").value=state.cycles[index].comment||'';$("commentDialog").showModal();$("commentText").focus();
+}
+function renderResultMatrix(){
+  var entries=state.cycles.map(function(c,i){return {c:c,i:i};}).filter(function(x){return x.c.times.some(function(v){return v!=null;})||x.c.comment;});
+  var averages=stats().stepAvgs;
+  var html='<table><thead><tr><th>Steg</th>'+entries.map(function(x){return '<th class="'+(x.c.valid?'':'excluded')+'">Cykel '+(x.i+1)+(completeCycle(x.c)?'':' · delvis')+'</th>';}).join('')+'<th>Medeltid</th></tr></thead><tbody>';
+  state.steps.forEach(function(s,i){html+='<tr><th>'+(i+1)+'. '+escapeHtml(s.name)+'</th>'+entries.map(function(x){return '<td class="'+(x.c.valid?'':'excluded')+'">'+(x.c.times[i]!=null?fmt(x.c.times[i]):'–')+'</td>';}).join('')+'<td>'+(averages[i].avg?fmt(averages[i].avg):'–')+'</td></tr>';});
+  html+='</tbody><tfoot><tr><th>Total cykeltid</th>'+entries.map(function(x){return '<td>'+fmt(cycleTotal(x.c))+'</td>';}).join('')+'<td>'+fmt(stats().avgCycle)+'</td></tr><tr><th>Kommentar</th>'+entries.map(function(x){return '<td class="note-cell">'+escapeHtml(x.c.comment||'–')+'</td>';}).join('')+'<td></td></tr></tfoot></table>';
+  $("resultMatrix").innerHTML=html;
 }
 function cycleTotal(c){return c.times.reduce(function(a,b){return a+(typeof b==="number"?b:0);},0);}
 function renderHistory(){
@@ -577,17 +650,19 @@ function renderHistory(){
   var rows=state.cycles.map(function(c,i){return {c:c,i:i,complete:c.times.every(function(v){return typeof v==="number"&&v>0;})};}).filter(function(x){return x.complete;});
   if(!rows.length){box.innerHTML='<div class="help">Inga kompletta cykler ännu.</div>';return;}
   box.innerHTML=rows.slice().reverse().map(function(x){
-    return '<div class="history-row'+(x.c.valid?"":" excluded")+'"><div class="history-name">Cykel '+(x.i+1)+'</div><div class="history-time">'+fmt(cycleTotal(x.c))+'</div><button class="btn secondary icon-btn hist-toggle" data-cycle="'+x.i+'" title="Inkludera / exkludera">×</button></div>';
+    return '<div class="history-row'+(x.c.valid?"":" excluded")+'"><div><div class="history-name">Cykel '+(x.i+1)+'</div><div class="history-note">'+escapeHtml(x.c.comment||'')+'</div></div><div class="history-time">'+fmt(cycleTotal(x.c))+'</div><button class="btn small hist-note" data-cycle="'+x.i+'">Kommentar</button><button class="btn secondary icon-btn hist-toggle" data-cycle="'+x.i+'" title="Inkludera / exkludera">×</button></div>';
   }).join("");
 }
-function toggleCycle(i){if(!state.cycles[i])return;state.cycles[i].valid=!state.cycles[i].valid;renderLive();}
+function toggleCycle(i){if(!state.cycles[i])return;state.cycles[i].valid=!state.cycles[i].valid;renderResults();}
 
 function editDuringLive(){
   if(!confirm("Tillbaka till stegredigering? Aktuell mätning raderas."))return;
   stopTimer();state.cycles=[];setScreen("setup");renderSteps();
 }
 function finishMeasurement(){
-  if(state.running&&currentElapsed()>50)captureStep();
+  if(state.running&&currentElapsed()>50){
+    if(captureStep()){if(state.currentStep===state.steps.length-1){state.currentCycle++;state.currentStep=0;state.cycles.push(newCycle());}else state.currentStep++;}
+  }
   stopTimer();
   setScreen("result");renderResults();
 }
@@ -609,6 +684,7 @@ function stats(){
   };
 }
 function renderResults(){
+  renderResultMatrix();renderHistory();drawCycleChart();
   var s=stats();
   $("resultTitle").textContent=state.process;
   $("resultMeta").textContent=state.date+" · "+state.steps.length+" steg · "+s.cycles.length+" kompletta cykler";
@@ -662,11 +738,11 @@ async function exportExcel(){
   s.stepAvgs.forEach(function(x,i){ws.addRow([i+1,x.name,x.type,fmt(x.avg),x.avg/1000]);});
   ws.columns=[{width:10},{width:40},{width:12},{width:16},{width:14}];
   var cyc=wb.addWorksheet("Cykler",{views:[{showGridLines:false}]});
-  var head=["Cykel"].concat(state.steps.map(function(x){return x.name;})).concat(["Totalt","Inkluderad"]);
+  var head=["Cykel"].concat(state.steps.map(function(x){return x.name;})).concat(["Totalt","Inkluderad","Kommentar","Komplett"]);
   var rh=cyc.addRow(head);rh.font={bold:true,color:{argb:"FFFFFFFF"}};rh.fill={type:"pattern",pattern:"solid",fgColor:{argb:"FF0F172A"}};
   state.cycles.forEach(function(c,i){
-    if(!c.times.every(function(v){return typeof v==="number"&&v>0;}))return;
-    cyc.addRow([i+1].concat(c.times.map(function(v){return v/1000;})).concat([cycleTotal(c)/1000,c.valid?"Ja":"Nej"]));
+    if(!c.times.some(function(v){return v!=null;})&&!c.comment)return;
+    cyc.addRow([i+1].concat(c.times.map(function(v){return v==null?null:v/1000;})).concat([cycleTotal(c)/1000,c.valid&&completeCycle(c)?"Ja":"Nej",c.comment||"",completeCycle(c)?"Ja":"Nej"]));
   });
   cyc.columns=head.map(function(h,i){return {width:i===0?10:Math.min(28,Math.max(12,String(h).length+2))};});
   var buf=await wb.xlsx.writeBuffer();
@@ -710,6 +786,16 @@ function exportPdf(){
     doc.setTextColor(245,158,11);doc.text("NNVA  "+s.shares.NNVA+"%",margin+45,y);
     doc.setTextColor(220,38,38);doc.text("NVA  "+s.shares.NVA+"%",margin+100,y);
   }
+  var notes=state.cycles.map(function(c,i){return {c:c,i:i};}).filter(function(x){return x.c.comment;});
+  if(notes.length){
+    doc.addPage();page++;header(page);y=36;
+    doc.setFontSize(12);doc.setFont("helvetica","bold");doc.text("Cykelkommentarer",margin,y);y+=10;
+    notes.forEach(function(x){
+      doc.setFont("helvetica","normal");doc.setFontSize(10);doc.setTextColor(15,23,42);
+      var lines=doc.splitTextToSize("Cykel "+(x.i+1)+": "+x.c.comment,W-2*margin);
+      lines.forEach(function(line){if(y>190){doc.addPage();page++;header(page);y=36;}doc.text(line,margin,y);y+=5;});y+=5;
+    });
+  }
   doc.setTextColor(100,116,139);doc.setFont("helvetica","normal");doc.setFontSize(7);doc.text("Genererad av Step Timer",margin,H-6);
   doc.save(safeName(state.process+"_StepTimer_"+state.date)+".pdf");
 }
@@ -718,8 +804,8 @@ function bind(){
   $("btnLoadPreset").onclick=loadPreset;$("btnLocalFile").onclick=openLocal;$("localFile").onchange=localChanged;
   $("btnStepTemplate").onclick=exportStepTemplate;$("btnAddStep").onclick=addStep;$("btnClearSteps").onclick=clearSteps;
   $("btnSaveSetup").onclick=function(){state.steps=editorSteps();saveSetup();toast("Sparat lokalt.");};
-  $("btnStart").onclick=startMeasurement;$("btnNext").onclick=nextStep;$("btnPause").onclick=pauseTimer;$("btnStop").onclick=stopTimer;
-  $("btnFinish").onclick=finishMeasurement;$("btnEditStepsLive").onclick=editDuringLive;
+  $("btnStart").onclick=startMeasurement;$("btnNext").onclick=nextStep;$("btnPause").onclick=pauseTimer;
+  $("btnFinish").onclick=finishMeasurement;
   $("btnBackLive").onclick=backToLive;$("btnNew").onclick=newObservation;
   $("btnExcel").onclick=exportExcel;$("btnPdf").onclick=exportPdf;$("btnExcelTop").onclick=exportExcel;$("btnPdfTop").onclick=exportPdf;
   $("stepList").addEventListener("input",function(e){if(e.target.classList.contains("step-name")){var i=+e.target.closest(".step-row").dataset.index;state.steps[i].name=e.target.value;saveSetup();}});
@@ -730,9 +816,14 @@ function bind(){
     if(e.target.closest(".step-down"))moveStep(i,1);
     if(e.target.closest(".step-delete"))deleteStep(i);
   });
-  $("historyList").addEventListener("click",function(e){var b=e.target.closest(".hist-toggle");if(b)toggleCycle(+b.dataset.cycle);});
+  $("btnPrevPage").onclick=function(){stepPage--;renderLiveSteps(true);};
+  $("btnNextPage").onclick=function(){stepPage++;renderLiveSteps(true);};
+  $("cycleComment").oninput=function(){state.cycles[state.currentCycle].comment=this.value;};
+  $("btnCycleNote").onclick=function(){openCycleComment(state.currentCycle);};
+  $("commentDialog").addEventListener("close",function(){if(this.returnValue!=="save")return;state.cycles[commentCycle].comment=$("commentText").value;if(!$("liveScreen").classList.contains("hidden"))$("cycleComment").value=state.cycles[state.currentCycle].comment||'';else renderResults();});
+  $("historyList").addEventListener("click",function(e){var b=e.target.closest(".hist-toggle");if(b)toggleCycle(+b.dataset.cycle);var n=e.target.closest(".hist-note");if(n)openCycleComment(+n.dataset.cycle);});
   ["processName","processDate","chkOperator","chkFlow","chkNormal"].forEach(function(id){$(id).addEventListener("change",saveSetup);});
-  window.addEventListener("resize",function(){if(!$("liveScreen").classList.contains("hidden"))drawCycleChart();});
+  window.addEventListener("resize",function(){if(!$("liveScreen").classList.contains("hidden"))renderLiveSteps();else drawCycleChart();});
   document.addEventListener("keydown",function(e){
     if(e.code==="Space"&&!$("liveScreen").classList.contains("hidden")&&!/INPUT|TEXTAREA|SELECT|BUTTON/.test((document.activeElement||{}).tagName||"")){e.preventDefault();nextStep();}
   });
