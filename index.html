@@ -121,6 +121,13 @@ body.measuring .menubar{display:none}
 }
 @media(max-height:500px){.live-toolbar{min-height:32px}.live-clock strong{font-size:22px}.live-clock{padding-bottom:0}#liveScreen>#btnNext{min-height:40px}.cycle-note{min-height:34px}.cycle-note input{height:32px}.matrix{grid-template-rows:28px repeat(var(--rows),minmax(0,1fr)) 30px}}
 
+
+.cycle-notes{flex-shrink:0;display:grid;gap:5px}
+.note-tabs{display:flex;gap:6px}.note-tabs .btn{font-size:14px;min-height:34px;padding:5px 10px;flex:1}
+.cycle-notes textarea{width:100%;min-height:62px;height:clamp(62px,12dvh,112px);resize:none;padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.35;outline:none}
+.cycle-notes textarea:focus{border-color:var(--accent)}
+@media(max-height:500px){.cycle-notes textarea{height:42px;min-height:42px;padding:6px 10px}.note-tabs .btn{min-height:28px;font-size:12px}}
+
 </style>
 </head>
 <body>
@@ -142,7 +149,6 @@ body.measuring .menubar{display:none}
         <div class="form-grid">
           <label class="field"><span>PROCESS</span><input id="processName" type="text" placeholder="Ex. Limhjul 1"></label>
           <label class="field"><span>DATUM</span><input id="processDate" type="date"></label>
-          <label class="field"><span>STANDARD WORK · CYKELTID (SEKUNDER)</span><input id="standardCycleTime" type="number" min="0.01" step="any" inputmode="decimal" placeholder="Ex. 85" aria-describedby="standardTimeHelp"><small id="standardTimeHelp" class="muted">Kort kommentar erbjuds efter en cykel som tar mer än 125 % av standardtiden. Lämna tomt för att avstå.</small></label>
         </div>
         <div class="checks">
           <label class="check"><input id="chkOperator" type="checkbox"><div><strong>Operatören är informerad</strong><span>Syftet är att förstå processen och hitta förbättringar, inte att pressa arbetstakten.</span></div></label>
@@ -189,7 +195,10 @@ body.measuring .menubar{display:none}
     <div class="live-clock"><span>Cykel <b id="liveCycle">1</b> · Steg <b id="liveStepNo">1 / 1</b></span><strong id="timer" class="timer-value">00:00.00</strong></div>
     <div class="card live-matrix-card"><div id="liveMatrix" class="matrix"></div></div>
     <div class="step-pager"><button id="btnPrevPage" class="btn small" aria-label="Föregående stegsida">Föregående</button><span id="stepPage" class="muted"></span><button id="btnNextPage" class="btn small" aria-label="Nästa stegsida">Nästa</button></div>
-    <div id="cycleNotePrompt" class="cycle-note hidden"><label id="cycleNoteLabel" for="cycleComment">Avslutad cykel</label><input id="cycleComment" placeholder="Kort orsak…" maxlength="80" autocomplete="off"><button id="btnSaveQuickNote" class="btn small">Spara</button><button id="btnDeferQuickNote" class="btn small">Senare</button></div>
+    <div id="cycleNotePrompt" class="cycle-notes">
+      <div class="note-tabs" role="group" aria-label="Välj cykel för kommentar"><button id="btnNoteCurrent" class="btn small">Pågående cykel</button><button id="btnNotePrevious" class="btn small" disabled>Senast avslutade</button></div>
+      <textarea id="cycleComment" rows="3" placeholder="Kommentar till cykeln…" aria-label="Kommentar till pågående cykel" autocomplete="off"></textarea>
+    </div>
     <button id="btnNext" class="btn primary big">Start</button>
   </section>
 
@@ -243,7 +252,7 @@ var $=function(id){return document.getElementById(id);};
 var STORAGE="steptimer_v4_setup";
 var THEME="steptimer_theme";
 var state={
-  process:"",date:"",standardCycleMs:0,steps:[],cycles:[],currentCycle:0,currentStep:0,
+  process:"",date:"",steps:[],cycles:[],currentCycle:0,currentStep:0,
   running:false,paused:false,startedAt:0,elapsed:0,timerHandle:null
 };
 
@@ -355,7 +364,6 @@ function saveSetup(){
   var data={
     process:$("processName").value.trim(),
     date:$("processDate").value,
-    standardCycleSeconds:$("standardCycleTime").value,
     steps:state.steps,
     checks:[$("chkOperator").checked,$("chkFlow").checked,$("chkNormal").checked]
   };
@@ -367,7 +375,6 @@ function restoreSetup(){
     if(!d)return false;
     $("processName").value=d.process||"";
     $("processDate").value=d.date||new Date().toISOString().slice(0,10);
-    $("standardCycleTime").value=d.standardCycleSeconds||"";
     state.steps=Array.isArray(d.steps)&&d.steps.length?d.steps:defaultSteps();
     if(Array.isArray(d.checks)){
       $("chkOperator").checked=!!d.checks[0];$("chkFlow").checked=!!d.checks[1];$("chkNormal").checked=!!d.checks[2];
@@ -461,9 +468,7 @@ function startMeasurement(){
   if(!state.steps.length)return toast("Lägg till minst ett steg.");
   if(!$("processName").value.trim())return toast("Ange processnamn.");
   if(!$("chkOperator").checked||!$("chkFlow").checked||!$("chkNormal").checked)return toast("Bekräfta de tre punkterna före mätningen.");
-  var standard=Number($("standardCycleTime").value);
-  if(!$("standardCycleTime").checkValidity()||!isFinite(standard))return toast("Ange en positiv standardcykeltid i sekunder, eller lämna fältet tomt.");
-  state.standardCycleMs=standard>0?standard*1000:0;quickNoteCycle=null;
+  noteMode="current";noteTarget=null;
   saveSetup();
   state.process=$("processName").value.trim();
   state.date=$("processDate").value||new Date().toISOString().slice(0,10);
@@ -502,6 +507,7 @@ function nextStep(){
     state.currentCycle++;
     state.currentStep=0;
     state.cycles.push(newCycle());
+    noteMode="previous";
   }else state.currentStep++;
   renderLive();
 }
@@ -605,31 +611,24 @@ function drawCycleChart(){
     guide(Math.min.apply(null,validTotals),"#16a34a","Bäst "+fmt(Math.min.apply(null,validTotals)),[2,3]);
   }
 }
-var stepPage=0,rowsPerPage=6,commentCycle=0,quickNoteCycle=null;
-function needsCycleNote(c){return state.standardCycleMs>0&&completeCycle(c)&&cycleTotal(c)>state.standardCycleMs*1.25&&!c.noteDone&&!c.noteDeferred;}
-function syncQuickNote(){
-  if(quickNoteCycle===null||!state.cycles[quickNoteCycle]||!needsCycleNote(state.cycles[quickNoteCycle])){
-    var next=state.cycles.findIndex(function(c,i){return i<state.currentCycle&&needsCycleNote(c);});
-    quickNoteCycle=next<0?null:next;
-    $("cycleComment").value=quickNoteCycle===null?"":state.cycles[quickNoteCycle].comment||"";
-  }
-  $("cycleNotePrompt").classList.toggle("hidden",quickNoteCycle===null);
-  if(quickNoteCycle!==null){var c=state.cycles[quickNoteCycle],pct=Math.round((cycleTotal(c)/state.standardCycleMs-1)*100);$("cycleNoteLabel").textContent="Cykel "+(quickNoteCycle+1)+" · +"+pct+" %";$("cycleComment").setAttribute("aria-label","Kort orsak för avslutad cykel "+(quickNoteCycle+1));}
+var stepPage=0,rowsPerPage=6,commentCycle=0,noteMode="current",noteTarget=null;
+function syncCycleComment(){
+  var previous=state.currentCycle-1;
+  if(previous<0)noteMode="current";
+  var target=noteMode==="previous"?previous:state.currentCycle;
+  if(noteTarget!==target){noteTarget=target;$("cycleComment").value=(state.cycles[target]||{}).comment||"";}
+  $("btnNoteCurrent").textContent="Pågående · cykel "+(state.currentCycle+1);
+  $("btnNotePrevious").textContent=previous>=0?"Senast · cykel "+(previous+1):"Senast avslutade";
+  $("btnNotePrevious").disabled=previous<0;
+  $("btnNoteCurrent").classList.toggle("primary",noteMode==="current");
+  $("btnNotePrevious").classList.toggle("primary",noteMode==="previous");
+  $("btnNoteCurrent").setAttribute("aria-pressed",String(noteMode==="current"));
+  $("btnNotePrevious").setAttribute("aria-pressed",String(noteMode==="previous"));
+  $("cycleComment").setAttribute("aria-label","Kommentar till "+(noteMode==="previous"?"senast avslutade":"pågående")+" cykel "+(target+1));
 }
-function finishQuickNote(defer){
-  if(quickNoteCycle===null)return;
-  var c=state.cycles[quickNoteCycle];c.comment=$("cycleComment").value.trim();
-  if(!defer&&!c.comment){toast("Skriv en kort orsak eller välj Senare.");return;}
-  c.noteDone=!defer;c.noteDeferred=defer;quickNoteCycle=null;
-  $("cycleComment").blur();syncQuickNote();renderLiveSteps();
-}
-function visibleCycles(){
-  var count=window.innerWidth<=600?1:2;
-  var out=[];for(var i=Math.max(0,state.currentCycle-count);i<=state.currentCycle;i++)out.push(i);
-  return out;
-}
+function visibleCycles(){return [state.currentCycle];}
 function renderLiveSteps(manual){
-  syncQuickNote();
+  syncCycleComment();
   var cycle=state.cycles[state.currentCycle]||newCycle();
   var h=$("liveMatrix").parentElement.clientHeight;
   rowsPerPage=Math.max(1,Math.min(state.steps.length,Math.floor((h-70)/44)));
@@ -710,7 +709,7 @@ function renderResults(){
   renderResultMatrix();renderHistory();drawCycleChart();
   var s=stats();
   $("resultTitle").textContent=state.process;
-  $("resultMeta").textContent=state.date+" · "+state.steps.length+" steg · "+s.cycles.length+" kompletta cykler"+(state.standardCycleMs?" · Standard work: "+fmtSec(state.standardCycleMs):"");
+  $("resultMeta").textContent=state.date+" · "+state.steps.length+" steg · "+s.cycles.length+" kompletta cykler";
   $("resCycles").textContent=s.cycles.length;
   $("resAvg").textContent=s.avgCycle?fmt(s.avgCycle):"–";
   $("resBottle").textContent=s.bottle&&s.bottle.avg?s.bottle.name:"–";
@@ -841,13 +840,12 @@ function bind(){
   });
   $("btnPrevPage").onclick=function(){stepPage--;renderLiveSteps(true);};
   $("btnNextPage").onclick=function(){stepPage++;renderLiveSteps(true);};
-  $("cycleComment").oninput=function(){if(quickNoteCycle!==null)state.cycles[quickNoteCycle].comment=this.value;};
-  $("cycleComment").onkeydown=function(e){if(e.key==="Enter"){e.preventDefault();finishQuickNote(false);}};
-  $("btnSaveQuickNote").onclick=function(){finishQuickNote(false);};
-  $("btnDeferQuickNote").onclick=function(){finishQuickNote(true);};
+  $("cycleComment").oninput=function(){if(noteTarget!==null&&state.cycles[noteTarget])state.cycles[noteTarget].comment=this.value;};
+  $("btnNoteCurrent").onclick=function(){noteMode="current";syncCycleComment();};
+  $("btnNotePrevious").onclick=function(){noteMode="previous";syncCycleComment();};
   $("commentDialog").addEventListener("close",function(){if(this.returnValue!=="save")return;state.cycles[commentCycle].comment=$("commentText").value;renderResults();});
   $("historyList").addEventListener("click",function(e){var b=e.target.closest(".hist-toggle");if(b)toggleCycle(+b.dataset.cycle);var n=e.target.closest(".hist-note");if(n)openCycleComment(+n.dataset.cycle);});
-  ["processName","processDate","standardCycleTime","chkOperator","chkFlow","chkNormal"].forEach(function(id){$(id).addEventListener("change",saveSetup);});
+  ["processName","processDate","chkOperator","chkFlow","chkNormal"].forEach(function(id){$(id).addEventListener("change",saveSetup);});
   window.addEventListener("resize",function(){if(!$("liveScreen").classList.contains("hidden"))renderLiveSteps();else drawCycleChart();});
   document.addEventListener("keydown",function(e){
     if(e.code==="Space"&&!$("liveScreen").classList.contains("hidden")&&!/INPUT|TEXTAREA|SELECT|BUTTON/.test((document.activeElement||{}).tagName||"")){e.preventDefault();nextStep();}
