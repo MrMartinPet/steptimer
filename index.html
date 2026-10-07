@@ -1,10 +1,8 @@
-<!doctype html>
-<html lang="sv" data-theme="dark">
-<head>
+<!DOCTYPE html><html lang="en" data-theme="dark"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0b1020">
-<title>Step Timer</title>
+<title data-i18n="Step Timer">Worksteps &amp; Times</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
@@ -128,125 +126,141 @@ body.measuring .menubar{display:none}
 .cycle-notes textarea:focus{border-color:var(--accent)}
 @media(max-height:500px){.cycle-notes textarea{height:42px;min-height:42px;padding:6px 10px}.note-tabs .btn{min-height:28px;font-size:12px}}
 
+.language-backdrop{position:fixed;inset:0;z-index:150;display:flex;align-items:center;justify-content:center;padding:14px;background:rgba(2,6,23,.72)}.language-picker{width:min(540px,100%);max-height:92dvh;overflow:auto;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:24px;text-align:center;box-shadow:0 24px 70px rgba(0,0,0,.45)}.language-picker p{color:var(--muted);font-size:16px}.language-options{display:grid;gap:12px;margin-top:24px}.language-options .btn{font-size:18px;min-height:64px}.language-options svg{width:42px;height:28px}.language-btn{border-radius:999px;min-height:40px;white-space:nowrap}.btn:focus-visible{outline:3px solid #60a5fa;outline-offset:3px}.btn.primary{background:#2563eb;border-color:#1d4ed8}.brand-mark{background:#2563eb}.menubar{flex-wrap:wrap}.brand-title{font-size:16px}
+@media(max-width:760px){.menubar{display:flex}.menu-actions{display:flex;flex-wrap:wrap;justify-content:flex-start}.menu-actions .btn{min-height:40px;font-size:12px;padding:6px 8px}.brand{width:100%}#liveScreen .live-actions{flex-wrap:wrap}.live-toolbar{flex-wrap:wrap}.live-title{flex-basis:100%}#liveScreen .language-btn{font-size:12px}.live-actions .language-btn svg{width:24px;height:16px}}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="menubar">
-    <div class="brand"><div class="brand-mark">ST</div><div><div class="brand-title">Step Timer</div><div class="brand-sub">Processobservation · stegtider</div></div></div>
-    <div class="menu-actions">
-      <button id="btnTheme" class="btn small secondary" title="Byt tema">☾</button>
-      <button id="btnExcelTop" class="btn small secondary" disabled>Excel</button>
-      <button id="btnPdfTop" class="btn small secondary" disabled>PDF</button>
+    <div class="brand"><div class="brand-mark">WT</div><div><div class="brand-title"><span data-i18n="Step Timer">Step Timer</span></div><div class="brand-sub"><span data-i18n="Processobservation · stegtider">Processobservation · stegtider</span></div></div></div>
+    <div class="menu-actions"><button id="btnLang" class="btn small language-btn" type="button">English</button>
+      <button id="btnTheme" class="btn small secondary" title="Byt tema" data-i18n-title="Byt tema">☾</button>
+      <button id="btnExcelTop" class="btn small secondary" disabled="">Excel</button>
+      <button id="btnPdfTop" class="btn small secondary" disabled="">PDF</button>
     </div>
   </div>
 
   <section id="setupScreen">
     <div class="setup-grid">
       <div class="card pad">
-        <div class="eyebrow">Före mätningen</div>
-        <h1>Förbered processobservationen</h1>
+        <div class="eyebrow"><span data-i18n="Före mätningen">Före mätningen</span></div>
+        <h1><span data-i18n="Förbered processobservationen">Förbered processobservationen</span></h1>
         <div class="form-grid">
-          <label class="field"><span>PROCESS</span><input id="processName" type="text" placeholder="Ex. Limhjul 1"></label>
-          <label class="field"><span>DATUM</span><input id="processDate" type="date"></label>
+          <label class="field"><span><span data-i18n="PROCESS">PROCESS</span></span><input id="processName" type="text" placeholder="Ex. Limhjul 1" data-i18n-placeholder="Ex. Limhjul 1"></label>
+          <label class="field"><span><span data-i18n="DATUM">DATUM</span></span><input id="processDate" type="date"></label>
         </div>
         <div class="checks">
-          <label class="check"><input id="chkOperator" type="checkbox"><div><strong>Operatören är informerad</strong><span>Syftet är att förstå processen och hitta förbättringar, inte att pressa arbetstakten.</span></div></label>
-          <label class="check"><input id="chkFlow" type="checkbox"><div><strong>Normalt processflöde</strong><span>Mät ordinarie arbetssätt utan extra buffert eller förberedelser utanför cykeln.</span></div></label>
-          <label class="check"><input id="chkNormal" type="checkbox"><div><strong>Standardiserat arbetssätt</strong><span>Operatören ska arbeta normalt och inte ändra tempot för att tidtagning pågår.</span></div></label>
+          <label class="check"><input id="chkOperator" type="checkbox"><div><strong><span data-i18n="Operatören är informerad">Operatören är informerad</span></strong><span><span data-i18n="Syftet är att förstå processen och hitta förbättringar, inte att pressa arbetstakten.">Syftet är att förstå processen och hitta förbättringar, inte att pressa arbetstakten.</span></span></div></label>
+          <label class="check"><input id="chkFlow" type="checkbox"><div><strong><span data-i18n="Normalt processflöde">Normalt processflöde</span></strong><span><span data-i18n="Mät ordinarie arbetssätt utan extra buffert eller förberedelser utanför cykeln.">Mät ordinarie arbetssätt utan extra buffert eller förberedelser utanför cykeln.</span></span></div></label>
+          <label class="check"><input id="chkNormal" type="checkbox"><div><strong><span data-i18n="Standardiserat arbetssätt">Standardiserat arbetssätt</span></strong><span><span data-i18n="Operatören ska arbeta normalt och inte ändra tempot för att tidtagning pågår.">Operatören ska arbeta normalt och inte ändra tempot för att tidtagning pågår.</span></span></div></label>
         </div>
       </div>
 
       <div class="card pad">
-        <div class="eyebrow">Förvalda steg</div>
-        <h2>Ladda steg från Excel</h2>
+        <div class="eyebrow"><span data-i18n="Förvalda steg">Förvalda steg</span></div>
+        <h2><span data-i18n="Ladda steg från Excel">Ladda steg från Excel</span></h2>
         <div class="source-row">
-          <select id="presetSelect"><option value="">Läser in filer...</option></select>
-          <button id="btnLoadPreset" class="btn primary">Ladda</button>
+          <select id="presetSelect"><option value=""><span data-i18n="Läser in filer...">Läser in filer...</span></option></select>
+          <button id="btnLoadPreset" class="btn primary"><span data-i18n="Ladda">Ladda</span></button>
         </div>
         <div class="source-actions">
-          <button id="btnLocalFile" class="btn secondary">Öppna egen Excel</button>
-          <button id="btnStepTemplate" class="btn secondary">Exportera stegmall</button>
+          <button id="btnLocalFile" class="btn secondary"><span data-i18n="Öppna egen Excel">Öppna egen Excel</span></button>
+          <button id="btnStepTemplate" class="btn secondary"><span data-i18n="Exportera stegmall">Exportera stegmall</span></button>
         </div>
         <input id="localFile" class="hidden" type="file" accept=".xlsx,.xls">
-        <div id="sourceStatus" class="help">Excel-filen ska ha tabellen <b>Tabell1</b> med kolumnerna <b>Steg</b> och <b>Moment</b>. Filnamnet blir namnet som visas i listan, exempelvis <b>Limhjul.xlsx</b>.</div>
+        <div id="sourceStatus" class="help"><span data-i18n="Excel-filen ska ha tabellen">Excel-filen ska ha tabellen</span> <b>Tabell1</b> <span data-i18n="med kolumnerna">med kolumnerna</span> <b><span data-i18n="Steg">Steg</span></b> <span data-i18n="och">och</span> <b><span data-i18n="Moment">Moment</span></b><span data-i18n=". Filnamnet blir namnet som visas i listan, exempelvis">. Filnamnet blir namnet som visas i listan, exempelvis</span> <b>Limhjul.xlsx</b>.</div>
       </div>
     </div>
 
     <div class="card steps-card">
       <div class="card-head">
-        <div><div class="eyebrow">Stegordning</div><h2>En aktivitetsföljd</h2><div class="help">Redigera moment, klassificera dem och ändra ordningen innan mätningen startar.</div></div>
+        <div><div class="eyebrow"><span data-i18n="Stegordning">Stegordning</span></div><h2><span data-i18n="En aktivitetsföljd">En aktivitetsföljd</span></h2><div class="help"><span data-i18n="Redigera moment, klassificera dem och ändra ordningen innan mätningen startar.">Redigera moment, klassificera dem och ändra ordningen innan mätningen startar.</span></div></div>
         <div class="card-head-actions">
-          <button id="btnAddStep" class="btn secondary">+ Steg</button>
-          <button id="btnClearSteps" class="btn secondary">Rensa</button>
-          <button id="btnSaveSetup" class="btn secondary">Spara lokalt</button>
+          <button id="btnAddStep" class="btn secondary"><span data-i18n="+ Steg">+ Steg</span></button>
+          <button id="btnClearSteps" class="btn secondary"><span data-i18n="Rensa">Rensa</span></button>
+          <button id="btnSaveSetup" class="btn secondary"><span data-i18n="Spara lokalt">Spara lokalt</span></button>
         </div>
       </div>
       <div id="stepList" class="step-list"></div>
-      <div class="setup-footer"><div id="stepCount" class="step-count">0 steg</div><button id="btnStart" class="btn primary big">Starta mätning</button></div>
+      <div class="setup-footer"><div id="stepCount" class="step-count">0 <span data-i18n="steg">steg</span></div><button id="btnStart" class="btn primary big"><span data-i18n="Starta mätning">Starta mätning</span></button></div>
     </div>
   </section>
 
   <section id="liveScreen" class="hidden">
     <div class="live-toolbar">
       <div class="live-title"><h2 id="liveProcess">–</h2><span id="liveMeta" class="hidden"></span></div>
-      <div class="live-actions"><button id="btnPause" class="btn small">Pausa</button><button id="btnFinish" class="btn small">Avsluta</button></div>
+      <div class="live-actions"><button id="btnLangLive" class="btn small language-btn" type="button">English</button><button id="btnPause" class="btn small"><span data-i18n="Pausa">Pausa</span></button><button id="btnFinish" class="btn small"><span data-i18n="Avsluta">Avsluta</span></button></div>
     </div>
-    <div class="live-clock"><span>Cykel <b id="liveCycle">1</b> · Steg <b id="liveStepNo">1 / 1</b></span><strong id="timer" class="timer-value">00:00.00</strong></div>
+    <div class="live-clock"><span><span data-i18n="Cykel">Cykel</span> <b id="liveCycle">1</b> · <span data-i18n="Steg">Steg</span> <b id="liveStepNo">1 / 1</b></span><strong id="timer" class="timer-value">00:00.00</strong></div>
     <div class="card live-matrix-card"><div id="liveMatrix" class="matrix"></div></div>
-    <div class="step-pager"><button id="btnPrevPage" class="btn small" aria-label="Föregående stegsida">Föregående</button><span id="stepPage" class="muted"></span><button id="btnNextPage" class="btn small" aria-label="Nästa stegsida">Nästa</button></div>
+    <div class="step-pager"><button id="btnPrevPage" class="btn small" aria-label="Föregående stegsida" data-i18n-aria-label="Föregående stegsida"><span data-i18n="Föregående">Föregående</span></button><span id="stepPage" class="muted"></span><button id="btnNextPage" class="btn small" aria-label="Nästa stegsida" data-i18n-aria-label="Nästa stegsida"><span data-i18n="Nästa">Nästa</span></button></div>
     <div id="cycleNotePrompt" class="cycle-notes">
-      <div class="note-tabs" role="group" aria-label="Välj cykel för kommentar"><button id="btnNoteCurrent" class="btn small">Pågående cykel</button><button id="btnNotePrevious" class="btn small" disabled>Senast avslutade</button></div>
-      <textarea id="cycleComment" rows="3" placeholder="Kommentar till cykeln…" aria-label="Kommentar till pågående cykel" autocomplete="off"></textarea>
+      <div class="note-tabs" role="group" aria-label="Välj cykel för kommentar" data-i18n-aria-label="Välj cykel för kommentar"><button id="btnNoteCurrent" class="btn small"><span data-i18n="Pågående cykel">Pågående cykel</span></button><button id="btnNotePrevious" class="btn small" disabled=""><span data-i18n="Senast avslutade">Senast avslutade</span></button></div>
+      <textarea id="cycleComment" rows="3" placeholder="Kommentar till cykeln…" aria-label="Kommentar till pågående cykel" autocomplete="off" data-i18n-placeholder="Kommentar till cykeln…" data-i18n-aria-label="Kommentar till pågående cykel"></textarea>
     </div>
-    <button id="btnNext" class="btn primary big">Start</button>
+    <button id="btnNext" class="btn primary big"><span data-i18n="Start">Start</span></button>
   </section>
 
   <section id="resultScreen" class="hidden">
     <div class="card pad">
-      <div class="eyebrow">Resultat</div>
-      <h1 id="resultTitle">Processobservation</h1>
+      <div class="eyebrow"><span data-i18n="Resultat">Resultat</span></div>
+      <h1 id="resultTitle"><span data-i18n="Processobservation">Processobservation</span></h1>
       <div id="resultMeta" class="help"></div>
     </div>
     <div class="summary-kpis">
-      <div class="card summary-kpi"><span class="muted compact">CYKLER</span><strong id="resCycles">0</strong></div>
-      <div class="card summary-kpi"><span class="muted compact">MEDEL CYKELTID</span><strong id="resAvg">–</strong></div>
-      <div class="card summary-kpi"><span class="muted compact">FLASKHALS</span><strong id="resBottle">–</strong></div>
-      <div class="card summary-kpi"><span class="muted compact">VA-ANDEL</span><strong id="resVA">0%</strong></div>
+      <div class="card summary-kpi"><span class="muted compact"><span data-i18n="CYKLER">CYKLER</span></span><strong id="resCycles">0</strong></div>
+      <div class="card summary-kpi"><span class="muted compact"><span data-i18n="MEDEL CYKELTID">MEDEL CYKELTID</span></span><strong id="resAvg">–</strong></div>
+      <div class="card summary-kpi"><span class="muted compact"><span data-i18n="FLASKHALS">FLASKHALS</span></span><strong id="resBottle">–</strong></div>
+      <div class="card summary-kpi"><span class="muted compact"><span data-i18n="VA-ANDEL">VA-ANDEL</span></span><strong id="resVA">0%</strong></div>
     </div>
     <div class="result-grid">
-      <div class="card chart-card"><div class="card-head"><h2>Medeltid per steg</h2><span class="muted compact">Endast kompletta, inkluderade cykler</span></div><div id="resultBars" class="bars"></div></div>
-      <div class="card class-card"><h2>Lean-fördelning</h2><div class="class-grid"><div class="class-box va"><span>VA</span><strong id="classVA">0%</strong></div><div class="class-box nnva"><span>NNVA</span><strong id="classNNVA">0%</strong></div><div class="class-box nva"><span>NVA</span><strong id="classNVA">0%</strong></div></div></div>
+      <div class="card chart-card"><div class="card-head"><h2><span data-i18n="Medeltid per steg">Medeltid per steg</span></h2><span class="muted compact"><span data-i18n="Endast kompletta, inkluderade cykler">Endast kompletta, inkluderade cykler</span></span></div><div id="resultBars" class="bars"></div></div>
+      <div class="card class-card"><h2><span data-i18n="Lean-fördelning">Lean-fördelning</span></h2><div class="class-grid"><div class="class-box va"><span>VA</span><strong id="classVA">0%</strong></div><div class="class-box nnva"><span>NNVA</span><strong id="classNNVA">0%</strong></div><div class="class-box nva"><span>NVA</span><strong id="classNVA">0%</strong></div></div></div>
     </div>
-    <div class="card pad result-matrix-card"><h2>Stegtider per cykel</h2><div id="resultMatrix" class="result-matrix"></div></div>
+    <div class="card pad result-matrix-card"><h2><span data-i18n="Stegtider per cykel">Stegtider per cykel</span></h2><div id="resultMatrix" class="result-matrix"></div></div>
         <div class="card live-chart-card">
           <div class="chart-head">
-            <div><div class="eyebrow">Cykeltid</div><h3>Staplar per cykel</h3><div class="help">Varje stapel är en hel cykel. Färgsegmenten visar hur stor del varje moment tar.</div></div>
+            <div><div class="eyebrow"><span data-i18n="Cykeltid">Cykeltid</span></div><h3><span data-i18n="Staplar per cykel">Staplar per cykel</span></h3><div class="help"><span data-i18n="Varje stapel är en hel cykel. Färgsegmenten visar hur stor del varje moment tar.">Varje stapel är en hel cykel. Färgsegmenten visar hur stor del varje moment tar.</span></div></div>
           </div>
           <div class="chart-kpis">
-            <div class="chart-kpi"><span>AKTUELL CYKEL</span><strong id="chartCurrent">–</strong></div>
-            <div class="chart-kpi"><span>MEDEL CYKELTID</span><strong id="chartAvg">–</strong></div>
-            <div class="chart-kpi"><span>BÄSTA CYKEL</span><strong id="chartBest">–</strong></div>
+            <div class="chart-kpi"><span><span data-i18n="AKTUELL CYKEL">AKTUELL CYKEL</span></span><strong id="chartCurrent">–</strong></div>
+            <div class="chart-kpi"><span><span data-i18n="MEDEL CYKELTID">MEDEL CYKELTID</span></span><strong id="chartAvg">–</strong></div>
+            <div class="chart-kpi"><span><span data-i18n="BÄSTA CYKEL">BÄSTA CYKEL</span></span><strong id="chartBest">–</strong></div>
           </div>
           <div class="cycle-chart-wrap"><canvas id="cycleChart"></canvas></div>
           <div id="chartLegend" class="chart-legend"></div>
         </div>
 
-    <div class="card side-card"><div class="card-head"><h3>Cykelhistorik och kommentarer</h3><span class="muted compact">× = exkludera</span></div><div id="historyList" class="history-list"></div></div>
+    <div class="card side-card"><div class="card-head"><h3><span data-i18n="Cykelhistorik och kommentarer">Cykelhistorik och kommentarer</span></h3><span class="muted compact"><span data-i18n="× = exkludera">× = exkludera</span></span></div><div id="historyList" class="history-list"></div></div>
     <div class="result-actions">
-      <button id="btnBackLive" class="btn secondary">Tillbaka till mätning</button>
-      <button id="btnExcel" class="btn secondary">Excelrapport</button>
-      <button id="btnPdf" class="btn secondary">PDF-rapport</button>
-      <button id="btnNew" class="btn primary">Ny observation</button>
+      <button id="btnBackLive" class="btn secondary"><span data-i18n="Tillbaka till mätning">Tillbaka till mätning</span></button>
+      <button id="btnExcel" class="btn secondary"><span data-i18n="Excelrapport">Excelrapport</span></button>
+      <button id="btnPdf" class="btn secondary"><span data-i18n="PDF-rapport">PDF-rapport</span></button>
+      <button id="btnNew" class="btn primary"><span data-i18n="Ny observation">Ny observation</span></button>
     </div>
   </section>
 </div>
-<dialog id="commentDialog"><form method="dialog"><h2 id="commentTitle">Cykelkommentar</h2><textarea id="commentText" rows="6" aria-label="Kommentar till hela cykeln"></textarea><div class="comment-actions"><button class="btn" value="cancel">Avbryt</button><button id="btnSaveComment" class="btn primary" value="save">Spara</button></div></form></dialog>
+<div id="languageModal" class="language-backdrop" role="dialog" aria-modal="true" aria-labelledby="languageTitle"><div class="language-picker"><h1 id="languageTitle">Choose language</h1><p>Välj språk · Sprache wählen</p><div class="language-options"><button class="btn" type="button" data-language="sv" lang="sv"><svg aria-hidden="true" viewBox="0 0 60 40" width="30" height="20"><rect width="60" height="40" fill="#006aa7"/><path d="M0 20H60M21 0V40" stroke="#fecc00" stroke-width="8"/></svg> Svenska</button><button class="btn" type="button" data-language="en" lang="en"><svg aria-hidden="true" viewBox="0 0 60 40" width="30" height="20"><rect width="60" height="40" fill="#012169"/><path d="M0 0L60 40M60 0L0 40" stroke="#fff" stroke-width="8"/><path d="M0 0L60 40M60 0L0 40" stroke="#c8102e" stroke-width="3"/><path d="M30 0V40M0 20H60" stroke="#fff" stroke-width="13"/><path d="M30 0V40M0 20H60" stroke="#c8102e" stroke-width="7"/></svg> English</button><button class="btn" type="button" data-language="de" lang="de"><svg aria-hidden="true" viewBox="0 0 60 40" width="30" height="20"><path fill="#000" d="M0 0H60V14H0Z"/><path fill="#d00" d="M0 14H60V27H0Z"/><path fill="#ffce00" d="M0 27H60V40H0Z"/></svg> Deutsch</button></div></div></div>
+<dialog id="commentDialog"><form method="dialog"><h2 id="commentTitle"><span data-i18n="Cykelkommentar">Cykelkommentar</span></h2><textarea id="commentText" rows="6" aria-label="Kommentar till hela cykeln" data-i18n-aria-label="Kommentar till hela cykeln"></textarea><div class="comment-actions"><button class="btn" value="cancel"><span data-i18n="Avbryt">Avbryt</span></button><button id="btnSaveComment" class="btn primary" value="save"><span data-i18n="Spara">Spara</span></button></div></form></dialog>
 <div id="toast" class="toast hidden" role="status"></div>
 
-<script>
-(function(){
+<script>(function(){
 "use strict";
+var TRANSLATIONS={"Step Timer":{"sv":"Moment-timer","en":"Worksteps & Times","de":"Arbeitsschritte & Zeiten"},"Processobservation · stegtider":{"sv":"Processobservation · stegtider","en":"Process observation · workstep times","de":"Prozessbeobachtung · Schrittzeiten"},"Före mätningen":{"sv":"Före mätningen","en":"Before the study","de":"Vor der Messung"},"Förbered processobservationen":{"sv":"Förbered processobservationen","en":"Prepare the process observation","de":"Prozessbeobachtung vorbereiten"},"PROCESS":{"sv":"PROCESS","en":"PROCESS","de":"PROZESS"},"DATUM":{"sv":"DATUM","en":"DATE","de":"DATUM"},"Ex. Limhjul 1":{"sv":"Ex. Limhjul 1","en":"e.g. Gluing wheel 1","de":"z. B. Kleberad 1"},"Operatören är informerad":{"sv":"Operatören är informerad","en":"The operator has been informed","de":"Der Bediener ist informiert"},"Syftet är att förstå processen och hitta förbättringar, inte att pressa arbetstakten.":{"sv":"Syftet är att förstå processen och hitta förbättringar, inte att pressa arbetstakten.","en":"The aim is to understand the process and find improvements, not to increase work pressure.","de":"Ziel ist es, den Prozess zu verstehen und Verbesserungen zu finden, nicht den Arbeitsdruck zu erhöhen."},"Normalt processflöde":{"sv":"Normalt processflöde","en":"Normal process flow","de":"Normaler Prozessablauf"},"Mät ordinarie arbetssätt utan extra buffert eller förberedelser utanför cykeln.":{"sv":"Mät ordinarie arbetssätt utan extra buffert eller förberedelser utanför cykeln.","en":"Measure the normal method without extra buffers or preparation outside the cycle.","de":"Die übliche Arbeitsweise ohne zusätzliche Puffer oder Vorbereitung außerhalb des Zyklus messen."},"Standardiserat arbetssätt":{"sv":"Standardiserat arbetssätt","en":"Standardized working method","de":"Standardisierte Arbeitsweise"},"Operatören ska arbeta normalt och inte ändra tempot för att tidtagning pågår.":{"sv":"Operatören ska arbeta normalt och inte ändra tempot för att tidtagning pågår.","en":"The operator should work normally without changing pace because timing is in progress.","de":"Der Bediener soll normal arbeiten und das Tempo wegen der Zeitmessung nicht ändern."},"Förvalda steg":{"sv":"Förvalda steg","en":"Preset worksteps","de":"Vordefinierte Arbeitsschritte"},"Ladda steg från Excel":{"sv":"Ladda steg från Excel","en":"Load worksteps from Excel","de":"Arbeitsschritte aus Excel laden"},"Läser in filer...":{"sv":"Läser in filer...","en":"Loading files…","de":"Dateien werden geladen…"},"Ladda":{"sv":"Ladda","en":"Load","de":"Laden"},"Öppna egen Excel":{"sv":"Öppna egen Excel","en":"Open Excel file","de":"Excel-Datei öffnen"},"Exportera stegmall":{"sv":"Exportera stegmall","en":"Export workstep template","de":"Schrittvorlage exportieren"},"Excel-filen ska ha tabellen":{"sv":"Excel-filen ska ha tabellen","en":"The Excel file should contain the table","de":"Die Excel-Datei sollte die Tabelle enthalten"},"med kolumnerna":{"sv":"med kolumnerna","en":"with the columns","de":"mit den Spalten"},"Steg":{"sv":"Steg","en":"Step","de":"Schritt"},"Moment":{"sv":"Moment","en":"Workstep","de":"Arbeitsschritt"},"och":{"sv":"och","en":"and","de":"und"},". Filnamnet blir namnet som visas i listan, exempelvis":{"sv":". Filnamnet blir namnet som visas i listan, exempelvis","en":". The file name is displayed in the list, for example","de":". Der Dateiname wird in der Liste angezeigt, zum Beispiel"},"Stegordning":{"sv":"Stegordning","en":"Workstep order","de":"Reihenfolge der Arbeitsschritte"},"En aktivitetsföljd":{"sv":"En aktivitetsföljd","en":"Workstep sequence","de":"Abfolge der Arbeitsschritte"},"Redigera moment, klassificera dem och ändra ordningen innan mätningen startar.":{"sv":"Redigera moment, klassificera dem och ändra ordningen innan mätningen startar.","en":"Edit worksteps, classify them and change their order before starting the measurement.","de":"Arbeitsschritte bearbeiten, klassifizieren und vor der Messung in die richtige Reihenfolge bringen."},"+ Steg":{"sv":"+ Steg","en":"+ Workstep","de":"+ Arbeitsschritt"},"Rensa":{"sv":"Rensa","en":"Clear","de":"Leeren"},"Spara lokalt":{"sv":"Spara lokalt","en":"Save locally","de":"Lokal speichern"},"Starta mätning":{"sv":"Starta mätning","en":"Start measurement","de":"Messung starten"},"Pausa":{"sv":"Pausa","en":"Pause","de":"Pause"},"Avsluta":{"sv":"Avsluta","en":"Finish","de":"Beenden"},"Cykel":{"sv":"Cykel","en":"Cycle","de":"Zyklus"},"Föregående":{"sv":"Föregående","en":"Previous","de":"Zurück"},"Nästa":{"sv":"Nästa","en":"Next","de":"Weiter"},"Pågående cykel":{"sv":"Pågående cykel","en":"Current cycle","de":"Aktueller Zyklus"},"Senast avslutade":{"sv":"Senast avslutade","en":"Last completed","de":"Zuletzt abgeschlossen"},"Kommentar till cykeln…":{"sv":"Kommentar till cykeln…","en":"Comment on the cycle…","de":"Kommentar zum Zyklus…"},"Start":{"sv":"Start","en":"Start","de":"Start"},"Resultat":{"sv":"Resultat","en":"Results","de":"Ergebnisse"},"Processobservation":{"sv":"Processobservation","en":"Process observation","de":"Prozessbeobachtung"},"CYKLER":{"sv":"CYKLER","en":"CYCLES","de":"ZYKLEN"},"MEDEL CYKELTID":{"sv":"MEDEL CYKELTID","en":"AVERAGE CYCLE TIME","de":"MITTLERE ZYKLUSZEIT"},"FLASKHALS":{"sv":"FLASKHALS","en":"BOTTLENECK","de":"ENGPASS"},"VA-ANDEL":{"sv":"VA-ANDEL","en":"VA SHARE","de":"VA-ANTEIL"},"Medeltid per steg":{"sv":"Medeltid per steg","en":"Average time per workstep","de":"Mittlere Zeit pro Arbeitsschritt"},"Endast kompletta, inkluderade cykler":{"sv":"Endast kompletta, inkluderade cykler","en":"Complete, included cycles only","de":"Nur vollständige, eingeschlossene Zyklen"},"Lean-fördelning":{"sv":"Lean-fördelning","en":"Lean breakdown","de":"Lean-Verteilung"},"Stegtider per cykel":{"sv":"Stegtider per cykel","en":"Workstep times per cycle","de":"Schrittzeiten je Zyklus"},"Cykeltid":{"sv":"Cykeltid","en":"Cycle time","de":"Zykluszeit"},"Staplar per cykel":{"sv":"Staplar per cykel","en":"Bars per cycle","de":"Balken je Zyklus"},"Varje stapel är en hel cykel. Färgsegmenten visar hur stor del varje moment tar.":{"sv":"Varje stapel är en hel cykel. Färgsegmenten visar hur stor del varje moment tar.","en":"Each bar represents a complete cycle. Colored segments show the time taken by each workstep.","de":"Jeder Balken zeigt einen vollständigen Zyklus. Farbsegmente zeigen den Zeitanteil jedes Arbeitsschritts."},"AKTUELL CYKEL":{"sv":"AKTUELL CYKEL","en":"CURRENT CYCLE","de":"AKTUELLER ZYKLUS"},"BÄSTA CYKEL":{"sv":"BÄSTA CYKEL","en":"BEST CYCLE","de":"BESTER ZYKLUS"},"Cykelhistorik och kommentarer":{"sv":"Cykelhistorik och kommentarer","en":"Cycle history and comments","de":"Zyklusverlauf und Kommentare"},"× = exkludera":{"sv":"× = exkludera","en":"× = exclude","de":"× = ausschließen"},"Tillbaka till mätning":{"sv":"Tillbaka till mätning","en":"Back to measurement","de":"Zurück zur Messung"},"Excelrapport":{"sv":"Excelrapport","en":"Excel report","de":"Excel-Bericht"},"PDF-rapport":{"sv":"PDF-rapport","en":"PDF report","de":"PDF-Bericht"},"Ny observation":{"sv":"Ny observation","en":"New observation","de":"Neue Beobachtung"},"Cykelkommentar":{"sv":"Cykelkommentar","en":"Cycle comment","de":"Zykluskommentar"},"Avbryt":{"sv":"Avbryt","en":"Cancel","de":"Abbrechen"},"Spara":{"sv":"Spara","en":"Save","de":"Speichern"},"Byt tema":{"sv":"Byt tema","en":"Change theme","de":"Design wechseln"},"Föregående stegsida":{"sv":"Föregående stegsida","en":"Previous workstep page","de":"Vorherige Schrittseite"},"Nästa stegsida":{"sv":"Nästa stegsida","en":"Next workstep page","de":"Nächste Schrittseite"},"Välj cykel för kommentar":{"sv":"Välj cykel för kommentar","en":"Choose a cycle to comment on","de":"Zyklus für einen Kommentar auswählen"},"Kommentar till pågående cykel":{"sv":"Kommentar till pågående cykel","en":"Comment on current cycle","de":"Kommentar zum aktuellen Zyklus"},"Kommentar till hela cykeln":{"sv":"Kommentar till hela cykeln","en":"Comment on the entire cycle","de":"Kommentar zum gesamten Zyklus"},"Hämta material":{"sv":"Hämta material","en":"Collect material","de":"Material holen"},"Placera på bord":{"sv":"Placera på bord","en":"Place on table","de":"Auf den Tisch legen"},"Ladda maskin":{"sv":"Ladda maskin","en":"Load machine","de":"Maschine beladen"},"Rengör":{"sv":"Rengör","en":"Clean","de":"Reinigen"},"Pussa":{"sv":"Pussa","en":"Pussa","de":"Pussa"},"Förbered etikett":{"sv":"Förbered etikett","en":"Prepare label","de":"Etikett vorbereiten"},"Inga steg. Lägg till ett steg eller ladda en Excel-fil.":{"sv":"Inga steg. Lägg till ett steg eller ladda en Excel-fil.","en":"No worksteps. Add a workstep or load an Excel file.","de":"Keine Arbeitsschritte. Einen Schritt hinzufügen oder eine Excel-Datei laden."},"Klassificering":{"sv":"Klassificering","en":"Classification","de":"Klassifizierung"},"Flytta upp":{"sv":"Flytta upp","en":"Move up","de":"Nach oben"},"Flytta ned":{"sv":"Flytta ned","en":"Move down","de":"Nach unten"},"Ta bort":{"sv":"Ta bort","en":"Delete","de":"Löschen"},"Rensa alla steg?":{"sv":"Rensa alla steg?","en":"Clear all worksteps?","de":"Alle Arbeitsschritte löschen?"},"Välj förvald process...":{"sv":"Välj förvald process...","en":"Choose a preset process…","de":"Vordefinierten Prozess auswählen…"},"Inga förvalda Excel-filer är registrerade ännu. När":{"sv":"Inga förvalda Excel-filer är registrerade ännu. När","en":"No preset Excel files are registered yet. When","de":"Noch keine vordefinierten Excel-Dateien registriert. Wenn"},"läggs i appen och i":{"sv":"läggs i appen och i","en":"is added to the app and to","de":"zur App und zu"},"visas den här.":{"sv":"visas den här.","en":"it appears here.","de":"hinzugefügt wird, erscheint sie hier."},"Kunde inte läsa listan över förvalda filer:":{"sv":"Kunde inte läsa listan över förvalda filer:","en":"Could not load the preset file list:","de":"Die Liste der vordefinierten Dateien konnte nicht geladen werden:"},"stepfiles.json saknas":{"sv":"stepfiles.json saknas","en":"stepfiles.json is missing","de":"stepfiles.json fehlt"},"Fel format i stepfiles.json":{"sv":"Fel format i stepfiles.json","en":"Invalid format in stepfiles.json","de":"Ungültiges Format in stepfiles.json"},"Arbetsboken saknar blad.":{"sv":"Arbetsboken saknar blad.","en":"The workbook has no worksheets.","de":"Die Arbeitsmappe enthält keine Tabellenblätter."},"Excel-filen är tom.":{"sv":"Excel-filen är tom.","en":"The Excel file is empty.","de":"Die Excel-Datei ist leer."},"Hittade inga moment. Förväntade kolumnerna Steg och Moment.":{"sv":"Hittade inga moment. Förväntade kolumnerna Steg och Moment.","en":"No worksteps found. Expected columns Step and Workstep.","de":"Keine Arbeitsschritte gefunden. Erwartete Spalten: Schritt und Arbeitsschritt."},"inläst ·":{"sv":"inläst ·","en":"loaded ·","de":"geladen ·"},"steg.":{"sv":"steg.","en":"worksteps.","de":"Arbeitsschritte."},"inläst":{"sv":"inläst","en":"loaded","de":"geladen"},"Välj en fil först.":{"sv":"Välj en fil först.","en":"Choose a file first.","de":"Zuerst eine Datei auswählen."},"Filen kunde inte öppnas.":{"sv":"Filen kunde inte öppnas.","en":"The file could not be opened.","de":"Die Datei konnte nicht geöffnet werden."},"Fel:":{"sv":"Fel:","en":"Error:","de":"Fehler:"},"Lägg till minst ett steg.":{"sv":"Lägg till minst ett steg.","en":"Add at least one workstep.","de":"Mindestens einen Arbeitsschritt hinzufügen."},"Ange processnamn.":{"sv":"Ange processnamn.","en":"Enter the process name.","de":"Den Prozessnamen eingeben."},"Bekräfta de tre punkterna före mätningen.":{"sv":"Bekräfta de tre punkterna före mätningen.","en":"Confirm the three checks before measuring.","de":"Die drei Punkte vor der Messung bestätigen."},"steg":{"sv":"steg","en":"worksteps","de":"Arbeitsschritte"},"Nästa cykel":{"sv":"Nästa cykel","en":"Next cycle","de":"Nächster Zyklus"},"Nästa steg":{"sv":"Nästa steg","en":"Next workstep","de":"Nächster Arbeitsschritt"},"Starta mätningen först.":{"sv":"Starta mätningen först.","en":"Start the measurement first.","de":"Zuerst die Messung starten."},"Fortsätt":{"sv":"Fortsätt","en":"Resume","de":"Fortsetzen"},"Staplar visas när mätningen startar":{"sv":"Staplar visas när mätningen startar","en":"Bars appear when measurement starts","de":"Balken erscheinen, sobald die Messung beginnt"},"Pågående · cykel":{"sv":"Pågående · cykel","en":"Current · cycle","de":"Aktuell · Zyklus"},"Senast · cykel":{"sv":"Senast · cykel","en":"Last · cycle","de":"Zuletzt · Zyklus"},"Kommentar till":{"sv":"Kommentar till","en":"Comment on","de":"Kommentar zum"},"senast avslutade":{"sv":"senast avslutade","en":"last completed","de":"zuletzt abgeschlossenen"},"pågående":{"sv":"pågående","en":"current","de":"aktuellen"},"cykel":{"sv":"cykel","en":"cycle","de":"Zyklus"},"Total cykeltid":{"sv":"Total cykeltid","en":"Total cycle time","de":"Gesamte Zykluszeit"},"Kommentar · cykel":{"sv":"Kommentar · cykel","en":"Comment · cycle","de":"Kommentar · Zyklus"},"delvis":{"sv":"delvis","en":"partial","de":"teilweise"},"Medeltid":{"sv":"Medeltid","en":"Average time","de":"Mittlere Zeit"},"Kommentar":{"sv":"Kommentar","en":"Comment","de":"Kommentar"},"Inga kompletta cykler ännu.":{"sv":"Inga kompletta cykler ännu.","en":"No complete cycles yet.","de":"Noch keine vollständigen Zyklen."},"Inkludera / exkludera":{"sv":"Inkludera / exkludera","en":"Include / exclude","de":"Einschließen / ausschließen"},"Tillbaka till stegredigering? Aktuell mätning raderas.":{"sv":"Tillbaka till stegredigering? Aktuell mätning raderas.","en":"Return to workstep editing? The current measurement will be deleted.","de":"Zur Schrittbearbeitung zurückkehren? Die aktuelle Messung wird gelöscht."},"kompletta cykler":{"sv":"kompletta cykler","en":"complete cycles","de":"vollständige Zyklen"},"Det finns inga steg att exportera.":{"sv":"Det finns inga steg att exportera.","en":"There are no worksteps to export.","de":"Keine Arbeitsschritte zum Exportieren vorhanden."},"Steglista":{"sv":"Steglista","en":"Worksteps","de":"Arbeitsschritte"},"Inga kompletta cykler att rapportera.":{"sv":"Inga kompletta cykler att rapportera.","en":"No complete cycles to report.","de":"Keine vollständigen Zyklen für den Bericht vorhanden."},"Rapport":{"sv":"Rapport","en":"Report","de":"Bericht"},"STEP TIMER · PROCESSOBSERVATION":{"sv":"Moment-timer · Processobservation","en":"Worksteps & Times · Process observation","de":"Arbeitsschritte & Zeiten · Prozessbeobachtung"},"Process":{"sv":"Process","en":"Process","de":"Prozess"},"Datum":{"sv":"Datum","en":"Date","de":"Datum"},"Cykler":{"sv":"Cykler","en":"Cycles","de":"Zyklen"},"Värde":{"sv":"Värde","en":"Value","de":"Wert"},"Medel cykeltid":{"sv":"Medel cykeltid","en":"Average cycle time","de":"Mittlere Zykluszeit"},"Flaskhals":{"sv":"Flaskhals","en":"Bottleneck","de":"Engpass"},"VA-andel":{"sv":"VA-andel","en":"VA share","de":"VA-Anteil"},"NNVA-andel":{"sv":"NNVA-andel","en":"NNVA share","de":"NNVA-Anteil"},"NVA-andel":{"sv":"NVA-andel","en":"NVA share","de":"NVA-Anteil"},"Typ":{"sv":"Typ","en":"Type","de":"Typ"},"Sekunder":{"sv":"Sekunder","en":"Seconds","de":"Sekunden"},"Totalt":{"sv":"Totalt","en":"Total","de":"Gesamt"},"Inkluderad":{"sv":"Inkluderad","en":"Included","de":"Eingeschlossen"},"Komplett":{"sv":"Komplett","en":"Complete","de":"Vollständig"},"Ja":{"sv":"Ja","en":"Yes","de":"Ja"},"Nej":{"sv":"Nej","en":"No","de":"Nein"},"Sida":{"sv":"Sida","en":"Page","de":"Seite"},"Cykelkommentarer":{"sv":"Cykelkommentarer","en":"Cycle comments","de":"Zykluskommentare"},"Genererad av Step Timer":{"sv":"Genererad av Moment-timer","en":"Generated by Worksteps & Times","de":"Erstellt mit Arbeitsschritte & Zeiten"},"Sparat lokalt.":{"sv":"Sparat lokalt.","en":"Saved locally.","de":"Lokal gespeichert."},"Bästa cykel":{"sv":"Bästa cykel","en":"Best cycle","de":"Bester Zyklus"}};
+var lang='en';
+try{var preferred=new URLSearchParams(location.search).get('lang')||localStorage.getItem('dometic-language');if(['sv','en','de'].includes(preferred))lang=preferred;}catch(e){}
+var languageFlags={"sv": "<svg aria-hidden=\"true\" viewBox=\"0 0 60 40\" width=\"30\" height=\"20\"><rect width=\"60\" height=\"40\" fill=\"#006aa7\"/><path d=\"M0 20H60M21 0V40\" stroke=\"#fecc00\" stroke-width=\"8\"/></svg>", "de": "<svg aria-hidden=\"true\" viewBox=\"0 0 60 40\" width=\"30\" height=\"20\"><path fill=\"#000\" d=\"M0 0H60V14H0Z\"/><path fill=\"#d00\" d=\"M0 14H60V27H0Z\"/><path fill=\"#ffce00\" d=\"M0 27H60V40H0Z\"/></svg>", "en": "<svg aria-hidden=\"true\" viewBox=\"0 0 60 40\" width=\"30\" height=\"20\"><rect width=\"60\" height=\"40\" fill=\"#012169\"/><path d=\"M0 0L60 40M60 0L0 40\" stroke=\"#fff\" stroke-width=\"8\"/><path d=\"M0 0L60 40M60 0L0 40\" stroke=\"#c8102e\" stroke-width=\"3\"/><path d=\"M30 0V40M0 20H60\" stroke=\"#fff\" stroke-width=\"13\"/><path d=\"M30 0V40M0 20H60\" stroke=\"#c8102e\" stroke-width=\"7\"/></svg>"};
+function t(key){return TRANSLATIONS[key]?TRANSLATIONS[key][lang]:key;}
+function locale(){return {sv:'sv-SE',en:'en-GB',de:'de-DE'}[lang];}
+function num(value,digits){return Number(value).toLocaleString(locale(),{minimumFractionDigits:digits,maximumFractionDigits:digits,useGrouping:false});}
+function displayDate(value){return /^\d{4}-\d{2}-\d{2}$/.test(value)?new Date(value+'T12:00:00').toLocaleDateString(locale()):value;}
+function openLanguagePicker(){document.querySelector('.app').inert=true;$('languageModal').classList.remove('hidden');$('languageModal').querySelector('button').focus();}
+function selectLanguage(value){if(!['sv','en','de'].includes(value))return;lang=value;try{localStorage.setItem('dometic-language',lang);}catch(e){}state.steps.forEach(function(step){if(step.defaultKey)step.name=t(step.defaultKey);});document.querySelector('.app').inert=false;$('languageModal').classList.add('hidden');applyLanguage();}
+function applyLanguage(){document.documentElement.lang=lang;document.querySelectorAll('[data-i18n]').forEach(function(el){el.textContent=t(el.dataset.i18n);});['placeholder','title','aria-label'].forEach(function(attr){document.querySelectorAll('[data-i18n-'+attr+']').forEach(function(el){el.setAttribute(attr,t(el.getAttribute('data-i18n-'+attr)));});});['btnLang','btnLangLive'].forEach(function(id){$(id).innerHTML=languageFlags[lang]+'<span>'+({sv:'Svenska',en:'English',de:'Deutsch'})[lang]+'</span>';});$('presetSelect').options[0].textContent=t('Välj förvald process...');updateSourceStatus();if(!$('setupScreen').classList.contains('hidden'))renderSteps();if(!$('liveScreen').classList.contains('hidden')){renderLive();$('btnPause').textContent=t(state.paused?'Fortsätt':'Pausa');}if(!$('resultScreen').classList.contains('hidden'))renderResults();}
+var sourceState={kind:'ready',name:'',error:''};
+function updateSourceStatus(){var text;if(sourceState.kind==='loaded')text=sourceState.name+' · '+t('inläst')+' · '+state.steps.length+' '+t('steg');else if(sourceState.kind==='error')text=t('Kunde inte läsa listan över förvalda filer:')+' '+t(sourceState.error);else if(sourceState.kind==='empty')text=t('Inga förvalda Excel-filer är registrerade ännu. När')+' Limhjul.xlsx '+t('läggs i appen och i')+' stepfiles.json '+t('visas den här.');else text=({sv:'Ladda en förvald Excel-fil eller öppna en egen. Kolumner: Steg och Moment. Engelska Step/Workstep och tyska Schritt/Arbeitsschritt fungerar också.',en:'Load a preset Excel file or open your own. Columns: Step and Workstep. Swedish Steg/Moment and German Schritt/Arbeitsschritt also work.',de:'Eine vordefinierte oder eigene Excel-Datei laden. Spalten: Schritt und Arbeitsschritt. Schwedisch Steg/Moment und Englisch Step/Workstep funktionieren ebenfalls.'})[lang];$('sourceStatus').textContent=text;}
+
 
 var $=function(id){return document.getElementById(id);};
 var STORAGE="steptimer_v4_setup";
@@ -269,7 +283,7 @@ function fmt(ms){
   var cs=Math.floor((ms%1000)/10);
   return String(min).padStart(2,"0")+":"+String(sec).padStart(2,"0")+"."+String(cs).padStart(2,"0");
 }
-function fmtSec(ms){return (ms/1000).toFixed(2)+" s";}
+function fmtSec(ms){return num(ms/1000,2)+" s";}
 function safeName(s){return String(s||"rapport").replace(/[\\/:*?"<>|]+/g,"_").replace(/\s+/g,"_").slice(0,70);}
 function setScreen(name){
   document.body.classList.toggle("measuring",name==="live");
@@ -289,26 +303,27 @@ function toggleTheme(){applyTheme(document.documentElement.getAttribute("data-th
 
 function defaultSteps(){
   return [
-    {name:"Hämta material",type:"VA"},
-    {name:"Placera på bord",type:"VA"},
-    {name:"Ladda maskin",type:"VA"},
-    {name:"Rengör",type:"NNVA"},
-    {name:"Pussa",type:"VA"},
-    {name:"Förbered etikett",type:"NNVA"}
+    {defaultKey:"H\u00e4mta material",name:(t("H\u00e4mta material")),type:"VA"},
+    {defaultKey:"Placera p\u00e5 bord",name:(t("Placera p\u00e5 bord")),type:"VA"},
+    {defaultKey:"Ladda maskin",name:(t("Ladda maskin")),type:"VA"},
+    {defaultKey:"Reng\u00f6r",name:(t("Reng\u00f6r")),type:"NNVA"},
+    {defaultKey:"Pussa",name:(t("Pussa")),type:"VA"},
+    {defaultKey:"F\u00f6rbered etikett",name:(t("F\u00f6rbered etikett")),type:"NNVA"}
   ];
 }
 function editorSteps(){
   var rows=[].slice.call(document.querySelectorAll("#stepList .step-row"));
-  return rows.map(function(r){
-    return {name:r.querySelector(".step-name").value.trim(),type:r.querySelector(".step-type").value};
+  return rows.map(function(r,index){
+    var original=state.steps[index];var name=r.querySelector(".step-name").value.trim();
+    return {defaultKey:original&&original.name===name?original.defaultKey:undefined,name:r.querySelector(".step-name").value.trim(),type:r.querySelector(".step-type").value};
   }).filter(function(s){return s.name;});
 }
 function rowClass(type){return "step-row type-"+type;}
 function renderSteps(){
   var box=$("stepList");
   if(!state.steps.length){
-    box.innerHTML='<div class="help" style="padding:18px;text-align:center;border:1px dashed var(--line);border-radius:10px">Inga steg. Lägg till ett steg eller ladda en Excel-fil.</div>';
-    $("stepCount").textContent="0 steg";
+    box.innerHTML=("<div class=\"help\" style=\"padding:18px;text-align:center;border:1px dashed var(--line);border-radius:10px\">"+t("Inga steg. Lägg till ett steg eller ladda en Excel-fil.")+"</div>");
+    $("stepCount").textContent=("0 "+t("steg"));
     return;
   }
   box.innerHTML="";
@@ -318,15 +333,15 @@ function renderSteps(){
     row.dataset.index=String(i);
     row.innerHTML=
       '<div class="step-no">'+(i+1)+'</div>'+
-      '<input class="step-name" type="text" value="'+escapeHtml(s.name)+'" aria-label="Moment '+(i+1)+'">'+
-      '<select class="step-type" aria-label="Klassificering"><option value="VA">VA</option><option value="NNVA">NNVA</option><option value="NVA">NVA</option></select>'+
-      '<button class="btn secondary icon-btn step-up" title="Flytta upp">↑</button>'+
-      '<button class="btn secondary icon-btn step-down" title="Flytta ned">↓</button>'+
-      '<button class="btn secondary icon-btn step-delete" title="Ta bort">×</button>';
+      '<input class="step-name" type="text" value="'+escapeHtml(s.name)+("\" aria-label=\""+t("Moment")+" ")+(i+1)+'">'+
+      ("<select class=\"step-type\" aria-label=\""+t("Klassificering")+"\"><option value=\"VA\">VA</option><option value=\"NNVA\">NNVA</option><option value=\"NVA\">NVA</option></select>")+
+      ("<button class=\"btn secondary icon-btn step-up\" title=\""+t("Flytta upp")+"\">↑</button>")+
+      ("<button class=\"btn secondary icon-btn step-down\" title=\""+t("Flytta ned")+"\">↓</button>")+
+      ("<button class=\"btn secondary icon-btn step-delete\" title=\""+t("Ta bort")+"\">×</button>");
     row.querySelector(".step-type").value=s.type;
     box.appendChild(row);
   });
-  $("stepCount").textContent=state.steps.length+" steg";
+  $("stepCount").textContent=state.steps.length+(" "+t("steg"));
 }
 function escapeHtml(s){
   return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
@@ -356,7 +371,7 @@ function deleteStep(i){
   renderSteps();saveSetup();
 }
 function clearSteps(){
-  if(state.steps.length&&!confirm("Rensa alla steg?"))return;
+  if(state.steps.length&&!confirm((t("Rensa alla steg?"))))return;
   state.steps=[];renderSteps();saveSetup();
 }
 function saveSetup(){
@@ -385,30 +400,29 @@ function restoreSetup(){
 
 async function loadPresetList(){
   var sel=$("presetSelect");
-  sel.innerHTML='<option value="">Välj förvald process...</option>';
+  sel.innerHTML=("<option value=\"\">"+t("Välj förvald process...")+"</option>");
   try{
     var res=await fetch("stepfiles.json",{cache:"no-store"});
-    if(!res.ok)throw new Error("stepfiles.json saknas");
+    if(!res.ok)throw new Error((t("stepfiles.json saknas")));
     var files=await res.json();
-    if(!Array.isArray(files))throw new Error("Fel format i stepfiles.json");
+    if(!Array.isArray(files))throw new Error((t("Fel format i stepfiles.json")));
     files.filter(function(f){return /\.xlsx?$/i.test(String(f));}).forEach(function(file){
       var o=document.createElement("option");o.value=file;o.textContent=String(file).replace(/\.xlsx?$/i,"");sel.appendChild(o);
     });
-    if(sel.options.length===1)$("sourceStatus").innerHTML='Inga förvalda Excel-filer är registrerade ännu. När <b>Limhjul.xlsx</b> läggs i appen och i <b>stepfiles.json</b> visas den här.';
-  }catch(e){
-    $("sourceStatus").textContent="Kunde inte läsa listan över förvalda filer: "+e.message;
+    if(sel.options.length===1)sourceState.kind="empty";updateSourceStatus();  }catch(e){
+    sourceState.kind="error";sourceState.error=Object.keys(TRANSLATIONS).find(function(k){return Object.values(TRANSLATIONS[k]).includes(e.message);})||e.message;updateSourceStatus();
   }
 }
 function parseWorkbook(buffer,sourceName){
   var wb=XLSX.read(buffer,{type:"array"});
-  if(!wb.SheetNames.length)throw new Error("Arbetsboken saknar blad.");
+  if(!wb.SheetNames.length)throw new Error((t("Arbetsboken saknar blad.")));
   var preferred=wb.SheetNames.indexOf("Tabell1")>=0?"Tabell1":wb.SheetNames[0];
   var ws=wb.Sheets[preferred];
   var rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:"",raw:false});
-  if(!rows.length)throw new Error("Excel-filen är tom.");
+  if(!rows.length)throw new Error((t("Excel-filen är tom.")));
   var headers=rows[0].map(function(v){return String(v).trim().toLowerCase();});
-  var iStep=headers.indexOf("steg");
-  var iMoment=headers.indexOf("moment");
+  var iStep=headers.findIndex(function(h){return ["steg","step","schritt"].includes(h);});
+  var iMoment=headers.findIndex(function(h){return ["moment","arbetssteg","processsteg","workstep","work step","task","arbeitsschritt"].includes(h);});
   if(iMoment<0)iMoment=headers.indexOf("arbetssteg");
   if(iMoment<0)iMoment=headers.indexOf("processsteg");
   var out=[];
@@ -432,27 +446,27 @@ function parseWorkbook(buffer,sourceName){
     });
   }
   out.sort(function(a,b){return a.order-b.order;});
-  if(!out.length)throw new Error("Hittade inga moment. Förväntade kolumnerna Steg och Moment.");
+  if(!out.length)throw new Error((t("Hittade inga moment. Förväntade kolumnerna Steg och Moment.")));
   state.steps=out.map(function(x){return {name:x.name,type:x.type};});
   if(!$("processName").value.trim())$("processName").value=sourceName;
   renderSteps();saveSetup();
-  $("sourceStatus").innerHTML='<b>'+escapeHtml(sourceName)+'</b> inläst · '+state.steps.length+" steg.";
-  toast(sourceName+" inläst");
+  sourceState.kind="loaded";sourceState.name=sourceName;updateSourceStatus();
+  toast(sourceName+(" "+t("inläst")));
 }
 async function loadPreset(){
   var file=$("presetSelect").value;
-  if(!file)return toast("Välj en fil först.");
+  if(!file)return toast((t("Välj en fil först.")));
   try{
     var res=await fetch(file,{cache:"no-store"});
-    if(!res.ok)throw new Error("Filen kunde inte öppnas.");
+    if(!res.ok)throw new Error((t("Filen kunde inte öppnas.")));
     parseWorkbook(await res.arrayBuffer(),String(file).replace(/\.xlsx?$/i,""));
-  }catch(e){toast("Fel: "+e.message);}
+  }catch(e){toast((t("Fel:")+" ")+e.message);}
 }
 function openLocal(){ $("localFile").click(); }
 function localChanged(e){
   var f=e.target.files&&e.target.files[0];if(!f)return;
   var rd=new FileReader();
-  rd.onload=function(){try{parseWorkbook(rd.result,f.name.replace(/\.xlsx?$/i,""));}catch(err){toast("Fel: "+err.message);}};
+  rd.onload=function(){try{parseWorkbook(rd.result,f.name.replace(/\.xlsx?$/i,""));}catch(err){toast((t("Fel:")+" ")+err.message);}};
   rd.readAsArrayBuffer(f);
   e.target.value="";
 }
@@ -465,9 +479,9 @@ function completedCycles(){
 }
 function startMeasurement(){
   state.steps=editorSteps();
-  if(!state.steps.length)return toast("Lägg till minst ett steg.");
-  if(!$("processName").value.trim())return toast("Ange processnamn.");
-  if(!$("chkOperator").checked||!$("chkFlow").checked||!$("chkNormal").checked)return toast("Bekräfta de tre punkterna före mätningen.");
+  if(!state.steps.length)return toast((t("Lägg till minst ett steg.")));
+  if(!$("processName").value.trim())return toast((t("Ange processnamn.")));
+  if(!$("chkOperator").checked||!$("chkFlow").checked||!$("chkNormal").checked)return toast((t("Bekräfta de tre punkterna före mätningen.")));
   noteMode="current";noteTarget=null;
   saveSetup();
   state.process=$("processName").value.trim();
@@ -475,13 +489,13 @@ function startMeasurement(){
   state.cycles=[newCycle()];state.currentCycle=0;state.currentStep=0;state.running=false;state.paused=false;state.elapsed=0;
   clearInterval(state.timerHandle);
   $("liveProcess").textContent=state.process;
-  $("liveMeta").textContent=state.date+" · "+state.steps.length+" steg";
-  $("btnNext").textContent="Start";$("btnPause").textContent="Pausa";
+  $("liveMeta").textContent=displayDate(state.date)+" · "+state.steps.length+(" "+t("steg"));
+  $("btnNext").textContent=(t("Start"));$("btnPause").textContent=(t("Pausa"));
   setScreen("live");renderLive();
 }
 function startTimer(){
   if(state.running)return;
-  state.running=true;state.paused=false;state.startedAt=performance.now();$("btnNext").textContent=state.currentStep===state.steps.length-1?"Nästa cykel":"Nästa steg";$("btnPause").textContent="Pausa";
+  state.running=true;state.paused=false;state.startedAt=performance.now();$("btnNext").textContent=state.currentStep===state.steps.length-1?(t("Nästa cykel")):(t("Nästa steg"));$("btnPause").textContent=(t("Pausa"));
   tick();state.timerHandle=setInterval(tick,40);renderLiveSteps();
 }
 function tick(){
@@ -512,16 +526,16 @@ function nextStep(){
   renderLive();
 }
 function pauseTimer(){
-  if(!state.running)return toast("Starta mätningen först.");
+  if(!state.running)return toast((t("Starta mätningen först.")));
   if(state.paused){resumeTimer();return;}
-  state.elapsed=currentElapsed();state.paused=true;clearInterval(state.timerHandle);$("btnPause").textContent="Fortsätt";tick();renderLiveSteps();
+  state.elapsed=currentElapsed();state.paused=true;clearInterval(state.timerHandle);$("btnPause").textContent=(t("Fortsätt"));tick();renderLiveSteps();
 }
 function resumeTimer(){
   if(!state.running)return startTimer();
-  state.paused=false;state.startedAt=performance.now();$("btnPause").textContent="Pausa";clearInterval(state.timerHandle);state.timerHandle=setInterval(tick,40);renderLiveSteps();
+  state.paused=false;state.startedAt=performance.now();$("btnPause").textContent=(t("Pausa"));clearInterval(state.timerHandle);state.timerHandle=setInterval(tick,40);renderLiveSteps();
 }
 function stopTimer(){
-  clearInterval(state.timerHandle);state.running=false;state.paused=false;state.elapsed=0;$("timer").textContent="00:00.00";$("btnNext").textContent="Start";$("btnPause").textContent="Pausa";renderLiveSteps();updateLiveTimes();
+  clearInterval(state.timerHandle);state.running=false;state.paused=false;state.elapsed=0;$("timer").textContent="00:00.00";$("btnNext").textContent=(t("Start"));$("btnPause").textContent=(t("Pausa"));renderLiveSteps();updateLiveTimes();
 }
 function renderLive(){
   $("liveCycle").textContent=state.currentCycle+1;
@@ -579,7 +593,7 @@ function drawCycleChart(){
     ctx.fillStyle=muted;var m=Math.floor(s/60),sec=s%60;ctx.fillText(String(m).padStart(2,"0")+":"+String(sec).padStart(2,"0"),padL-6,gy);
   }
   if(!entries.length){
-    ctx.fillStyle=muted;ctx.textAlign="center";ctx.font="12px system-ui,-apple-system,Segoe UI,Inter,Arial";ctx.fillText("Staplar visas när mätningen startar",padL+innerW/2,padT+innerH/2);return;
+    ctx.fillStyle=muted;ctx.textAlign="center";ctx.font="12px system-ui,-apple-system,Segoe UI,Inter,Arial";ctx.fillText((t("Staplar visas när mätningen startar")),padL+innerW/2,padT+innerH/2);return;
   }
 
   var n=entries.length,gap=Math.max(4,innerW/(n*18)),bw=Math.max(11,(innerW-gap*(n-1))/n);
@@ -597,7 +611,7 @@ function drawCycleChart(){
       acc+=ms;
     });
     ctx.globalAlpha=1;
-    var top=y(e.total),label=(e.total/1000).toFixed(1)+"s";
+    var top=y(e.total),label=num(e.total/1000,1)+"s";
     ctx.font="700 "+(bw<28?9:10)+"px system-ui,-apple-system,Segoe UI,Inter,Arial";ctx.textAlign="center";ctx.textBaseline="bottom";ctx.fillStyle=ink;ctx.fillText(label,x+bw/2,top-3);
     ctx.font="10px system-ui,-apple-system,Segoe UI,Inter,Arial";ctx.textBaseline="top";ctx.fillStyle=e.current?style.getPropertyValue("--accent").trim():ink;ctx.fillText(String(e.index+1),x+bw/2,H-padB+7);
   });
@@ -608,7 +622,7 @@ function drawCycleChart(){
   if(validTotals.length){
     var avg=validTotals.reduce(function(a,b){return a+b;},0)/validTotals.length;
     guide(avg,"#f97316","Ø "+fmt(avg),[6,4]);
-    guide(Math.min.apply(null,validTotals),"#16a34a","Bäst "+fmt(Math.min.apply(null,validTotals)),[2,3]);
+    guide(Math.min.apply(null,validTotals),"#16a34a",t("Bästa cykel")+" "+fmt(Math.min.apply(null,validTotals)),[2,3]);
   }
 }
 var stepPage=0,rowsPerPage=6,commentCycle=0,noteMode="current",noteTarget=null;
@@ -617,14 +631,14 @@ function syncCycleComment(){
   if(previous<0)noteMode="current";
   var target=noteMode==="previous"?previous:state.currentCycle;
   if(noteTarget!==target){noteTarget=target;$("cycleComment").value=(state.cycles[target]||{}).comment||"";}
-  $("btnNoteCurrent").textContent="Pågående · cykel "+(state.currentCycle+1);
-  $("btnNotePrevious").textContent=previous>=0?"Senast · cykel "+(previous+1):"Senast avslutade";
+  $("btnNoteCurrent").textContent=(t("Pågående · cykel")+" ")+(state.currentCycle+1);
+  $("btnNotePrevious").textContent=previous>=0?(t("Senast · cykel")+" ")+(previous+1):(t("Senast avslutade"));
   $("btnNotePrevious").disabled=previous<0;
   $("btnNoteCurrent").classList.toggle("primary",noteMode==="current");
   $("btnNotePrevious").classList.toggle("primary",noteMode==="previous");
   $("btnNoteCurrent").setAttribute("aria-pressed",String(noteMode==="current"));
   $("btnNotePrevious").setAttribute("aria-pressed",String(noteMode==="previous"));
-  $("cycleComment").setAttribute("aria-label","Kommentar till "+(noteMode==="previous"?"senast avslutade":"pågående")+" cykel "+(target+1));
+  $("cycleComment").setAttribute("aria-label",(t("Kommentar till")+" ")+(noteMode==="previous"?(t("senast avslutade")):(t("pågående")))+(" "+t("cykel")+" ")+(target+1));
 }
 function visibleCycles(){return [state.currentCycle];}
 function renderLiveSteps(manual){
@@ -636,16 +650,16 @@ function renderLiveSteps(manual){
   var pages=Math.ceil(state.steps.length/rowsPerPage);stepPage=Math.max(0,Math.min(stepPage,pages-1));
   var start=stepPage*rowsPerPage,end=Math.min(start+rowsPerPage,state.steps.length),cols=visibleCycles();
   var box=$("liveMatrix");box.style.setProperty("--rows",end-start);box.style.setProperty("--cols",cols.length);
-  var html='<div class="matrix-row matrix-header"><div>Steg</div>'+cols.map(function(ci){return '<div class="matrix-time'+(ci===state.currentCycle?' current-column':'')+'" style="font-size:14px">Cykel '+(ci+1)+'</div>';}).join('')+'</div>';
+  var html=("<div class=\"matrix-row matrix-header\"><div>"+t("Steg")+"</div>")+cols.map(function(ci){return '<div class="matrix-time'+(ci===state.currentCycle?' current-column':'')+("\" style=\"font-size:14px\">"+t("Cykel")+" ")+(ci+1)+'</div>';}).join('')+'</div>';
   for(var i=start;i<end;i++){
     html+='<div class="matrix-row'+(i===state.currentStep?' active':cycle.times[i]!=null?' done':'')+'"'+(i===state.currentStep?' aria-current="step"':'')+'><div class="matrix-label" title="'+escapeHtml(state.steps[i].name)+'"><span class="number">'+(i+1)+'</span><span class="step-name-text">'+escapeHtml(state.steps[i].name)+'</span></div>'+cols.map(function(ci){var c=state.cycles[ci];return '<div class="matrix-time'+(ci===state.currentCycle?' current-column current-time':'')+'"'+(ci===state.currentCycle&&i===state.currentStep?' id="activeStepTime"':'')+'>'+(c.times[i]!=null?fmt(c.times[i]):'–')+'</div>';}).join('')+'</div>';
   }
-  html+='<div class="matrix-row matrix-total"><div>Total cykeltid</div>'+cols.map(function(ci){return '<div class="matrix-time'+(ci===state.currentCycle?' current-column':'')+'"'+(ci===state.currentCycle?' id="activeCycleTotal"':'')+'>'+fmt(cycleTotal(state.cycles[ci]))+'</div>';}).join('')+'</div>';
+  html+=("<div class=\"matrix-row matrix-total\"><div>"+t("Total cykeltid")+"</div>")+cols.map(function(ci){return '<div class="matrix-time'+(ci===state.currentCycle?' current-column':'')+'"'+(ci===state.currentCycle?' id="activeCycleTotal"':'')+'>'+fmt(cycleTotal(state.cycles[ci]))+'</div>';}).join('')+'</div>';
   box.innerHTML=html;
-  $("stepPage").textContent=pages>1?'Steg '+(start+1)+'–'+end+' / '+state.steps.length:state.steps.length+' steg';
+  $("stepPage").textContent=pages>1?(t("Steg")+" ")+(start+1)+'–'+end+' / '+state.steps.length:state.steps.length+(" "+t("steg"));
   $("btnPrevPage").disabled=stepPage===0;$("btnNextPage").disabled=stepPage===pages-1;
   $("btnPrevPage").style.visibility=$("btnNextPage").style.visibility=pages>1?'visible':'hidden';
-  $("btnNext").textContent=!state.running?'Start':state.paused?'Fortsätt':state.currentStep===state.steps.length-1?'Nästa cykel':'Nästa steg';
+  $("btnNext").textContent=!state.running?(t("Start")):state.paused?(t("Fortsätt")):state.currentStep===state.steps.length-1?(t("Nästa cykel")):(t("Nästa steg"));
   updateLiveTimes();
 }
 function updateLiveTimes(){
@@ -655,30 +669,30 @@ function updateLiveTimes(){
   var total=$("activeCycleTotal");if(total)total.textContent=fmt(cycleTotal(c)+(state.running?ms:0));
 }
 function openCycleComment(index){
-  commentCycle=index;$("commentTitle").textContent='Kommentar · cykel '+(index+1);
+  commentCycle=index;$("commentTitle").textContent=(t("Kommentar · cykel")+" ")+(index+1);
   $("commentText").value=state.cycles[index].comment||'';$("commentDialog").showModal();$("commentText").focus();
 }
 function renderResultMatrix(){
   var entries=state.cycles.map(function(c,i){return {c:c,i:i};}).filter(function(x){return x.c.times.some(function(v){return v!=null;})||x.c.comment;});
   var averages=stats().stepAvgs;
-  var html='<table><thead><tr><th>Steg</th>'+entries.map(function(x){return '<th class="'+(x.c.valid?'':'excluded')+'">Cykel '+(x.i+1)+(completeCycle(x.c)?'':' · delvis')+'</th>';}).join('')+'<th>Medeltid</th></tr></thead><tbody>';
+  var html=("<table><thead><tr><th>"+t("Steg")+"</th>")+entries.map(function(x){return '<th class="'+(x.c.valid?'':'excluded')+("\">"+t("Cykel")+" ")+(x.i+1)+(completeCycle(x.c)?'':(" · "+t("delvis")))+'</th>';}).join('')+("<th>"+t("Medeltid")+"</th></tr></thead><tbody>");
   state.steps.forEach(function(s,i){html+='<tr><th>'+(i+1)+'. '+escapeHtml(s.name)+'</th>'+entries.map(function(x){return '<td class="'+(x.c.valid?'':'excluded')+'">'+(x.c.times[i]!=null?fmt(x.c.times[i]):'–')+'</td>';}).join('')+'<td>'+(averages[i].avg?fmt(averages[i].avg):'–')+'</td></tr>';});
-  html+='</tbody><tfoot><tr><th>Total cykeltid</th>'+entries.map(function(x){return '<td>'+fmt(cycleTotal(x.c))+'</td>';}).join('')+'<td>'+fmt(stats().avgCycle)+'</td></tr><tr><th>Kommentar</th>'+entries.map(function(x){return '<td class="note-cell">'+escapeHtml(x.c.comment||'–')+'</td>';}).join('')+'<td></td></tr></tfoot></table>';
+  html+=("</tbody><tfoot><tr><th>"+t("Total cykeltid")+"</th>")+entries.map(function(x){return '<td>'+fmt(cycleTotal(x.c))+'</td>';}).join('')+'<td>'+fmt(stats().avgCycle)+("</td></tr><tr><th>"+t("Kommentar")+"</th>")+entries.map(function(x){return '<td class="note-cell">'+escapeHtml(x.c.comment||'–')+'</td>';}).join('')+'<td></td></tr></tfoot></table>';
   $("resultMatrix").innerHTML=html;
 }
 function cycleTotal(c){return c.times.reduce(function(a,b){return a+(typeof b==="number"?b:0);},0);}
 function renderHistory(){
   var box=$("historyList");
   var rows=state.cycles.map(function(c,i){return {c:c,i:i,complete:c.times.every(function(v){return typeof v==="number"&&v>0;})};}).filter(function(x){return x.complete;});
-  if(!rows.length){box.innerHTML='<div class="help">Inga kompletta cykler ännu.</div>';return;}
+  if(!rows.length){box.innerHTML=("<div class=\"help\">"+t("Inga kompletta cykler ännu.")+"</div>");return;}
   box.innerHTML=rows.slice().reverse().map(function(x){
-    return '<div class="history-row'+(x.c.valid?"":" excluded")+'"><div><div class="history-name">Cykel '+(x.i+1)+'</div><div class="history-note">'+escapeHtml(x.c.comment||'')+'</div></div><div class="history-time">'+fmt(cycleTotal(x.c))+'</div><button class="btn small hist-note" data-cycle="'+x.i+'">Kommentar</button><button class="btn secondary icon-btn hist-toggle" data-cycle="'+x.i+'" title="Inkludera / exkludera">×</button></div>';
+    return '<div class="history-row'+(x.c.valid?"":" excluded")+("\"><div><div class=\"history-name\">"+t("Cykel")+" ")+(x.i+1)+'</div><div class="history-note">'+escapeHtml(x.c.comment||'')+'</div></div><div class="history-time">'+fmt(cycleTotal(x.c))+'</div><button class="btn small hist-note" data-cycle="'+x.i+("\">"+t("Kommentar")+"</button><button class=\"btn secondary icon-btn hist-toggle\" data-cycle=\"")+x.i+("\" title=\""+t("Inkludera / exkludera")+"\">×</button></div>");
   }).join("");
 }
 function toggleCycle(i){if(!state.cycles[i])return;state.cycles[i].valid=!state.cycles[i].valid;renderResults();}
 
 function editDuringLive(){
-  if(!confirm("Tillbaka till stegredigering? Aktuell mätning raderas."))return;
+  if(!confirm((t("Tillbaka till stegredigering? Aktuell mätning raderas."))))return;
   stopTimer();state.cycles=[];setScreen("setup");renderSteps();
 }
 function finishMeasurement(){
@@ -709,7 +723,7 @@ function renderResults(){
   renderResultMatrix();renderHistory();drawCycleChart();
   var s=stats();
   $("resultTitle").textContent=state.process;
-  $("resultMeta").textContent=state.date+" · "+state.steps.length+" steg · "+s.cycles.length+" kompletta cykler";
+  $("resultMeta").textContent=displayDate(state.date)+" · "+state.steps.length+(" "+t("steg")+" · ")+s.cycles.length+(" "+t("kompletta cykler"));
   $("resCycles").textContent=s.cycles.length;
   $("resAvg").textContent=s.avgCycle?fmt(s.avgCycle):"–";
   $("resBottle").textContent=s.bottle&&s.bottle.avg?s.bottle.name:"–";
@@ -732,54 +746,56 @@ function newObservation(){
 
 async function exportStepTemplate(){
   state.steps=editorSteps();
-  if(!state.steps.length)return toast("Det finns inga steg att exportera.");
+  if(!state.steps.length)return toast((t("Det finns inga steg att exportera.")));
   var wb=new ExcelJS.Workbook();
-  var ws=wb.addWorksheet("Steg");
+  var ws=wb.addWorksheet((t("Steg")));
   ws.addTable({
     name:"Tabell1",ref:"A1",headerRow:true,style:{theme:"TableStyleMedium2",showRowStripes:true},
-    columns:[{name:"Steg"},{name:"Moment"}],
+    columns:[{name:(t("Steg"))},{name:(t("Moment"))}],
     rows:state.steps.map(function(s,i){return [i+1,s.name];})
   });
   ws.getColumn(1).width=10;ws.getColumn(2).width=42;
   var buf=await wb.xlsx.writeBuffer();
-  downloadBlob(buf,(state.process||"Steglista")+".xlsx","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+  downloadBlob(buf,(state.process||(t("Steglista")))+".xlsx","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 }
 function downloadBlob(buffer,name,type){
   var blob=buffer instanceof Blob?buffer:new Blob([buffer],{type:type});
   var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href);},1000);
 }
 async function exportExcel(){
-  var s=stats();if(!s.cycles.length)return toast("Inga kompletta cykler att rapportera.");
-  var wb=new ExcelJS.Workbook();wb.creator="Step Timer";wb.created=new Date();
-  var ws=wb.addWorksheet("Rapport",{views:[{showGridLines:false}]});
-  ws.mergeCells("A1:E2");var title=ws.getCell("A1");title.value="STEP TIMER · PROCESSOBSERVATION";title.font={bold:true,size:20,color:{argb:"FFFFFFFF"}};title.fill={type:"pattern",pattern:"solid",fgColor:{argb:"FF0F172A"}};title.alignment={vertical:"middle",horizontal:"left"};
-  ws.getRow(3).values=["Process",state.process,"Datum",state.date,"Cykler",s.cycles.length];ws.getRow(3).font={bold:true};
-  ws.getRow(5).values=["KPI","Värde"];ws.getRow(5).font={bold:true,color:{argb:"FFFFFFFF"}};ws.getRow(5).fill={type:"pattern",pattern:"solid",fgColor:{argb:"FF2563EB"}};
-  [["Medel cykeltid",fmt(s.avgCycle)],["Flaskhals",s.bottle?s.bottle.name:"–"],["VA-andel",s.shares.VA+"%"],["NNVA-andel",s.shares.NNVA+"%"],["NVA-andel",s.shares.NVA+"%"]].forEach(function(r){ws.addRow(r);});
-  ws.addRow([]);var hr=ws.addRow(["Steg","Moment","Typ","Medeltid","Sekunder"]);hr.font={bold:true,color:{argb:"FFFFFFFF"}};hr.fill={type:"pattern",pattern:"solid",fgColor:{argb:"FF0F172A"}};
+  var s=stats();if(!s.cycles.length)return toast((t("Inga kompletta cykler att rapportera.")));
+  var wb=new ExcelJS.Workbook();wb.creator=t("Step Timer");wb.created=new Date();
+  var ws=wb.addWorksheet((t("Rapport")),{views:[{showGridLines:false}]});
+  ws.mergeCells("A1:E2");var title=ws.getCell("A1");title.value=(t("STEP TIMER · PROCESSOBSERVATION"));title.font={bold:true,size:20,color:{argb:"FFFFFFFF"}};title.fill={type:"pattern",pattern:"solid",fgColor:{argb:"FF0F172A"}};title.alignment={vertical:"middle",horizontal:"left"};
+  ws.getRow(3).values=[(t("Process")),state.process,(t("Datum")),state.date,(t("Cykler")),s.cycles.length];ws.getRow(3).font={bold:true};
+  ws.getRow(5).values=["KPI",(t("Värde"))];ws.getRow(5).font={bold:true,color:{argb:"FFFFFFFF"}};ws.getRow(5).fill={type:"pattern",pattern:"solid",fgColor:{argb:"FF2563EB"}};
+  [[(t("Medel cykeltid")),fmt(s.avgCycle)],[(t("Flaskhals")),s.bottle?s.bottle.name:"–"],[(t("VA-andel")),s.shares.VA+"%"],[(t("NNVA-andel")),s.shares.NNVA+"%"],[(t("NVA-andel")),s.shares.NVA+"%"]].forEach(function(r){ws.addRow(r);});
+  ws.addRow([]);var hr=ws.addRow([(t("Steg")),(t("Moment")),(t("Typ")),(t("Medeltid")),(t("Sekunder"))]);hr.font={bold:true,color:{argb:"FFFFFFFF"}};hr.fill={type:"pattern",pattern:"solid",fgColor:{argb:"FF0F172A"}};
   s.stepAvgs.forEach(function(x,i){ws.addRow([i+1,x.name,x.type,fmt(x.avg),x.avg/1000]);});
   ws.columns=[{width:10},{width:40},{width:12},{width:16},{width:14}];
-  var cyc=wb.addWorksheet("Cykler",{views:[{showGridLines:false}]});
-  var head=["Cykel"].concat(state.steps.map(function(x){return x.name;})).concat(["Totalt","Inkluderad","Kommentar","Komplett"]);
+  ws.getCell('D3').value=new Date(state.date+'T12:00:00');ws.getCell('D3').numFmt={sv:'yyyy-mm-dd',en:'dd/mm/yyyy',de:'dd.mm.yyyy'}[lang];ws.getColumn(5).numFmt='0.00';
+  var cyc=wb.addWorksheet((t("Cykler")),{views:[{showGridLines:false}]});
+  var head=[(t("Cykel"))].concat(state.steps.map(function(x){return x.name;})).concat([(t("Totalt")),(t("Inkluderad")),(t("Kommentar")),(t("Komplett"))]);
   var rh=cyc.addRow(head);rh.font={bold:true,color:{argb:"FFFFFFFF"}};rh.fill={type:"pattern",pattern:"solid",fgColor:{argb:"FF0F172A"}};
   state.cycles.forEach(function(c,i){
     if(!c.times.some(function(v){return v!=null;})&&!c.comment)return;
-    cyc.addRow([i+1].concat(c.times.map(function(v){return v==null?null:v/1000;})).concat([cycleTotal(c)/1000,c.valid&&completeCycle(c)?"Ja":"Nej",c.comment||"",completeCycle(c)?"Ja":"Nej"]));
+    cyc.addRow([i+1].concat(c.times.map(function(v){return v==null?null:v/1000;})).concat([cycleTotal(c)/1000,c.valid&&completeCycle(c)?(t("Ja")):(t("Nej")),c.comment||"",completeCycle(c)?(t("Ja")):(t("Nej"))]));
   });
   cyc.columns=head.map(function(h,i){return {width:i===0?10:Math.min(28,Math.max(12,String(h).length+2))};});
+  for(var col=2;col<=state.steps.length+2;col++)cyc.getColumn(col).numFmt='0.00';
   var buf=await wb.xlsx.writeBuffer();
-  downloadBlob(buf,safeName(state.process+"_StepTimer_"+state.date)+".xlsx","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+  downloadBlob(buf,safeName(state.process+"_Worksteps-Times_"+state.date)+".xlsx","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 }
 function exportPdf(){
-  var s=stats();if(!s.cycles.length)return toast("Inga kompletta cykler att rapportera.");
+  var s=stats();if(!s.cycles.length)return toast((t("Inga kompletta cykler att rapportera.")));
   var jsPDF=window.jspdf.jsPDF;var doc=new jsPDF({orientation:"landscape",unit:"mm",format:"a4"});
   var W=297,H=210,margin=12;
   function header(page){
     doc.setFillColor(15,23,42);doc.rect(0,0,W,24,"F");
-    doc.setTextColor(255,255,255);doc.setFont("helvetica","bold");doc.setFontSize(16);doc.text("STEP TIMER · PROCESSOBSERVATION",margin,10);
-    doc.setFont("helvetica","normal");doc.setFontSize(9);doc.text(state.process+" · "+state.date,margin,17);
+    doc.setTextColor(255,255,255);doc.setFont("helvetica","bold");doc.setFontSize(16);doc.text((t("STEP TIMER · PROCESSOBSERVATION")),margin,10);
+    doc.setFont("helvetica","normal");doc.setFontSize(9);doc.text(state.process+" · "+displayDate(state.date),margin,17);
     doc.setFillColor(37,99,235);doc.rect(0,24,W,2,"F");
-    doc.setTextColor(15,23,42);doc.setFontSize(8);doc.text("Sida "+page,W-margin,10,{align:"right"});
+    doc.setTextColor(15,23,42);doc.setFontSize(8);doc.text((t("Sida")+" ")+page,W-margin,10,{align:"right"});
   }
   function card(x,y,w,label,value){
     doc.setDrawColor(226,232,240);doc.setFillColor(248,250,252);doc.roundedRect(x,y,w,20,2,2,"FD");
@@ -788,8 +804,8 @@ function exportPdf(){
   }
   header(1);
   var gap=4,cw=(W-2*margin-3*gap)/4;
-  card(margin,32,cw,"Cykler",s.cycles.length);card(margin+cw+gap,32,cw,"Medel cykeltid",fmt(s.avgCycle));card(margin+(cw+gap)*2,32,cw,"Flaskhals",s.bottle?s.bottle.name:"–");card(margin+(cw+gap)*3,32,cw,"VA-andel",s.shares.VA+"%");
-  doc.setFont("helvetica","bold");doc.setFontSize(11);doc.setTextColor(15,23,42);doc.text("Medeltid per steg",margin,62);
+  card(margin,32,cw,(t("Cykler")),s.cycles.length);card(margin+cw+gap,32,cw,(t("Medel cykeltid")),fmt(s.avgCycle));card(margin+(cw+gap)*2,32,cw,(t("Flaskhals")),s.bottle?s.bottle.name:"–");card(margin+(cw+gap)*3,32,cw,(t("VA-andel")),s.shares.VA+"%");
+  doc.setFont("helvetica","bold");doc.setFontSize(11);doc.setTextColor(15,23,42);doc.text((t("Medeltid per steg")),margin,62);
   var max=Math.max.apply(null,s.stepAvgs.map(function(x){return x.avg;}).concat([1]));
   var y=69,page=1;
   s.stepAvgs.forEach(function(x,i){
@@ -803,7 +819,7 @@ function exportPdf(){
   });
   if(page===1&&y<174){
     y+=4;doc.setDrawColor(226,232,240);doc.line(margin,y,W-margin,y);y+=8;
-    doc.setFont("helvetica","bold");doc.setFontSize(10);doc.text("Lean-fördelning",margin,y);y+=8;
+    doc.setFont("helvetica","bold");doc.setFontSize(10);doc.text((t("Lean-fördelning")),margin,y);y+=8;
     doc.setFontSize(11);doc.setTextColor(22,163,74);doc.text("VA  "+s.shares.VA+"%",margin,y);
     doc.setTextColor(245,158,11);doc.text("NNVA  "+s.shares.NNVA+"%",margin+45,y);
     doc.setTextColor(220,38,38);doc.text("NVA  "+s.shares.NVA+"%",margin+100,y);
@@ -811,26 +827,27 @@ function exportPdf(){
   var notes=state.cycles.map(function(c,i){return {c:c,i:i};}).filter(function(x){return x.c.comment;});
   if(notes.length){
     doc.addPage();page++;header(page);y=36;
-    doc.setFontSize(12);doc.setFont("helvetica","bold");doc.text("Cykelkommentarer",margin,y);y+=10;
+    doc.setFontSize(12);doc.setFont("helvetica","bold");doc.text((t("Cykelkommentarer")),margin,y);y+=10;
     notes.forEach(function(x){
       doc.setFont("helvetica","normal");doc.setFontSize(10);doc.setTextColor(15,23,42);
-      var lines=doc.splitTextToSize("Cykel "+(x.i+1)+": "+x.c.comment,W-2*margin);
+      var lines=doc.splitTextToSize((t("Cykel")+" ")+(x.i+1)+": "+x.c.comment,W-2*margin);
       lines.forEach(function(line){if(y>190){doc.addPage();page++;header(page);y=36;}doc.text(line,margin,y);y+=5;});y+=5;
     });
   }
-  doc.setTextColor(100,116,139);doc.setFont("helvetica","normal");doc.setFontSize(7);doc.text("Genererad av Step Timer",margin,H-6);
-  doc.save(safeName(state.process+"_StepTimer_"+state.date)+".pdf");
+  doc.setTextColor(100,116,139);doc.setFont("helvetica","normal");doc.setFontSize(7);doc.text((t("Genererad av Step Timer")),margin,H-6);
+  doc.save(safeName(state.process+"_Worksteps-Times_"+state.date)+".pdf");
 }
 function bind(){
+  $("btnLang").onclick=openLanguagePicker;$("btnLangLive").onclick=openLanguagePicker;document.querySelectorAll("[data-language]").forEach(function(b){b.onclick=function(){selectLanguage(b.dataset.language);};});
   $("btnTheme").onclick=toggleTheme;
   $("btnLoadPreset").onclick=loadPreset;$("btnLocalFile").onclick=openLocal;$("localFile").onchange=localChanged;
   $("btnStepTemplate").onclick=exportStepTemplate;$("btnAddStep").onclick=addStep;$("btnClearSteps").onclick=clearSteps;
-  $("btnSaveSetup").onclick=function(){state.steps=editorSteps();saveSetup();toast("Sparat lokalt.");};
+  $("btnSaveSetup").onclick=function(){state.steps=editorSteps();saveSetup();toast((t("Sparat lokalt.")));};
   $("btnStart").onclick=startMeasurement;$("btnNext").onclick=nextStep;$("btnPause").onclick=pauseTimer;
   $("btnFinish").onclick=finishMeasurement;
   $("btnBackLive").onclick=backToLive;$("btnNew").onclick=newObservation;
   $("btnExcel").onclick=exportExcel;$("btnPdf").onclick=exportPdf;$("btnExcelTop").onclick=exportExcel;$("btnPdfTop").onclick=exportPdf;
-  $("stepList").addEventListener("input",function(e){if(e.target.classList.contains("step-name")){var i=+e.target.closest(".step-row").dataset.index;state.steps[i].name=e.target.value;saveSetup();}});
+  $("stepList").addEventListener("input",function(e){if(e.target.classList.contains("step-name")){var i=+e.target.closest(".step-row").dataset.index;state.steps[i].name=e.target.value;delete state.steps[i].defaultKey;saveSetup();}});
   $("stepList").addEventListener("change",function(e){if(e.target.classList.contains("step-type")){var row=e.target.closest(".step-row"),i=+row.dataset.index;state.steps[i].type=e.target.value;row.className=rowClass(e.target.value);saveSetup();}});
   $("stepList").addEventListener("click",function(e){
     var row=e.target.closest(".step-row");if(!row)return;var i=+row.dataset.index;
@@ -848,6 +865,7 @@ function bind(){
   ["processName","processDate","chkOperator","chkFlow","chkNormal"].forEach(function(id){$(id).addEventListener("change",saveSetup);});
   window.addEventListener("resize",function(){if(!$("liveScreen").classList.contains("hidden"))renderLiveSteps();else drawCycleChart();});
   document.addEventListener("keydown",function(e){
+    if(!$("languageModal").classList.contains("hidden"))return;
     if(e.code==="Space"&&!$("liveScreen").classList.contains("hidden")&&!/INPUT|TEXTAREA|SELECT|BUTTON/.test((document.activeElement||{}).tagName||"")){e.preventDefault();nextStep();}
   });
 }
@@ -855,10 +873,10 @@ function init(){
   applyTheme(localStorage.getItem(THEME)||"dark");
   $("processDate").value=new Date().toISOString().slice(0,10);
   if(!restoreSetup())state.steps=defaultSteps();
-  renderSteps();loadPresetList();bind();
+  renderSteps();loadPresetList();bind();applyLanguage();openLanguagePicker();
 }
 document.addEventListener("DOMContentLoaded",init);
 })();
 </script>
-</body>
-</html>
+
+</body></html>
