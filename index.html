@@ -301,16 +301,6 @@ function applyTheme(theme){
 }
 function toggleTheme(){applyTheme(document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark");}
 
-function defaultSteps(){
-  return [
-    {defaultKey:"H\u00e4mta material",name:(t("H\u00e4mta material")),type:"VA"},
-    {defaultKey:"Placera p\u00e5 bord",name:(t("Placera p\u00e5 bord")),type:"VA"},
-    {defaultKey:"Ladda maskin",name:(t("Ladda maskin")),type:"VA"},
-    {defaultKey:"Reng\u00f6r",name:(t("Reng\u00f6r")),type:"NNVA"},
-    {defaultKey:"Pussa",name:(t("Pussa")),type:"VA"},
-    {defaultKey:"F\u00f6rbered etikett",name:(t("F\u00f6rbered etikett")),type:"NNVA"}
-  ];
-}
 function editorSteps(){
   var rows=[].slice.call(document.querySelectorAll("#stepList .step-row"));
   return rows.map(function(r,index){
@@ -380,6 +370,7 @@ function saveSetup(){
     process:$("processName").value.trim(),
     date:$("processDate").value,
     steps:state.steps,
+    sourceName:sourceState.kind==='loaded'?sourceState.name:'',
     checks:[$("chkOperator").checked,$("chkFlow").checked,$("chkNormal").checked]
   };
   localStorage.setItem(STORAGE,JSON.stringify(data));
@@ -390,7 +381,11 @@ function restoreSetup(){
     if(!d)return false;
     $("processName").value=d.process||"";
     $("processDate").value=d.date||new Date().toISOString().slice(0,10);
-    state.steps=Array.isArray(d.steps)&&d.steps.length?d.steps:defaultSteps();
+    state.steps=Array.isArray(d.steps)?d.steps.filter(function(step){return step&&typeof step.name==='string'&&['VA','NNVA','NVA'].includes(step.type);}):[];
+    // Only discard the untouched old bundled example, never a custom or imported list.
+    var oldExample=['Hämta material','Placera på bord','Ladda maskin','Rengör','Pussa','Förbered etikett'];
+    if(state.steps.length===oldExample.length&&state.steps.every(function(step,i){return step.defaultKey===oldExample[i];}))state.steps=[];
+    if(d.sourceName&&state.steps.length){sourceState.kind='loaded';sourceState.name=d.sourceName;}
     if(Array.isArray(d.checks)){
       $("chkOperator").checked=!!d.checks[0];$("chkFlow").checked=!!d.checks[1];$("chkNormal").checked=!!d.checks[2];
     }
@@ -449,8 +444,8 @@ function parseWorkbook(buffer,sourceName){
   if(!out.length)throw new Error((t("Hittade inga moment. Förväntade kolumnerna Steg och Moment.")));
   state.steps=out.map(function(x){return {name:x.name,type:x.type};});
   if(!$("processName").value.trim())$("processName").value=sourceName;
-  renderSteps();saveSetup();
-  sourceState.kind="loaded";sourceState.name=sourceName;updateSourceStatus();
+  sourceState.kind="loaded";sourceState.name=sourceName;
+  renderSteps();saveSetup();updateSourceStatus();
   toast(sourceName+(" "+t("inläst")));
 }
 async function loadPreset(){
@@ -872,7 +867,7 @@ function bind(){
 function init(){
   applyTheme(localStorage.getItem(THEME)||"dark");
   $("processDate").value=new Date().toISOString().slice(0,10);
-  if(!restoreSetup())state.steps=defaultSteps();
+  if(!restoreSetup())state.steps=[];
   renderSteps();loadPresetList();bind();applyLanguage();openLanguagePicker();
 }
 document.addEventListener("DOMContentLoaded",init);
